@@ -1,0 +1,599 @@
+rfc_research_assistant:
+  agent: >
+    rfc_research_assistant
+  description: >
+    **Role & Goal:**  Your primary goal is to conduct focused research based on initial RFC notes,
+    specifically within the domain of Google Cloud Platform (GCP) data engineering, and synthesize the
+    findings into a structured report suitable for advancing the RFC process.
+
+    **Input:** You will receive initial RFC notes in markdown format ({notes}). You must analyze these
+    notes to understand:
+    1.  The core **Research Topic**.
+    2.  The specific **Decision** that needs to be informed by the research.
+    3.  Any stated technical **Requirements** or **Constraints**.
+
+    **Core Responsibilities:**
+    1.  **Targeted Research:** Utilize web search and scraping tools to investigate the research topic
+    defined in the notes.
+    2.  **GCP Data Engineering Focus:** Critically filter and prioritize information relevant to GCP
+    services, best practices, and common data engineering patterns within GCP.
+    3.  **Solution Exploration:** Identify potential technical solutions, approaches, or architectural
+    patterns that address the topic and requirements.
+    4.  **Evaluation:** Analyze the pros and cons of each identified option. Explore alternatives and
+    gather pertinent technical details (e.g., service limitations, integration points, costs if available).
+    5.  **Synthesis & Reporting:** Structure the gathered information logically into a markdown document.
+    6.  **Citation:** Properly cite sources using hyperlinks for all significant claims or data points
+    derived from external resources.
+
+    **Critical Constraint:** Your research, analysis, and recommendations MUST be tailored to the context
+    of **GCP data engineering**. Do **not** change the **meaning** of the background, context, topic,
+    problem definition, requirements, or constraints provided in the original user notes.
+
+    **RFC Notes for this task:** {notes}
+  expected_output: >
+    A well-structured markdown document presenting the research findings. The document must use clear Markdown formatting (headings, lists, code blocks) and include the following top-level sections, populated with synthesized research relevant to the input notes:
+
+    *   `## User's input notes`: The original `{notes}` provided by the user, included verbatim for context.
+    *   `## Research Summary`: A brief executive summary of the key findings and conclusions of the research.
+    *   `## Options`: Detailed descriptions of the viable technical solutions or alternatives identified.
+    For each option:
+        *   Include technical details.
+        *   List specific Pros and Cons.
+        *   Highlight relevant GCP services or considerations.
+    *   `## Requirements Analysis`: Explicitly address how the identified options align with (or fail to meet)
+    the requirements and constraints mentioned in the input notes.
+    *   `## Recommendation / Decision Support`: Provide analysis or data points that directly support making
+    the decision outlined in the input notes (often by comparing options based on pros/cons and requirement alignment).
+    *   `## Implementation Considerations`: Outline high-level steps, potential challenges, or key factors
+    for implementing the proposed or favored solution(s).
+    *   `## Sources`: A list of hyperlinks used for the research.
+
+    *Example Output Structure:*
+    ```markdown
+    # Research Report: [Topic derived from Input Notes]
+
+    ## User's input notes
+    [Verbatim copy of the original {notes} provided to the agent.]
+
+    ## Research Summary
+    [Concise overview, e.g., "Research compared three GCP services (Dataflow, Dataproc, BigQuery) for ETL processing based on specified latency and cost constraints..."]
+
+    ## Options
+    ### Option 1: GCP Service A
+    - Description: [...]
+    - Pros:
+        - [...]
+    - Cons:
+        - [...]
+    - Relevant GCP Details: [Specific configurations, limitations, pricing model aspects...]
+
+    ### Option 2: GCP Service B
+    - Description: [...]
+    - Pros:
+        - [...]
+    - Cons:
+        - [...]
+    - Relevant GCP Details: [...]
+
+    ## Requirements Analysis
+    - Requirement 'Low Latency': Option A meets this best due to [...], Option B has limitations [...].
+    - Constraint 'Budget < $X/month': Option B is likely more cost-effective because [...].
+    - [...]
+
+    ## Recommendation / Decision Support
+    [Analysis to aid decision, e.g., "If latency is the primary driver, Option A is recommended despite higher potential cost. If budget is paramount, Option B is viable if latency trade-offs are acceptable..."]
+
+    ## Implementation Considerations
+    [High-level points, e.g., "Requires IAM setup for service accounts, network configuration for VPC-SC, monitoring setup using Cloud Monitoring..."]
+
+    ## Sources
+    - [https://link.to.source1.com]
+    - [https://link.to.source2.com]
+    ```
+  async_execution: false
+
+rfc_author:
+  agent: >
+    rfc_author
+  description: >
+    **Goal:** To transform a research report into a comprehensive and well-structured draft RFC document,
+    adhering strictly to the provided template.
+
+    **Core Responsibilities:**
+    1.  **Deep Analysis:** Thoroughly analyze the provided markdown research report (`context: rfc_research_assistant`).
+    Understand not just the explicit findings but also the underlying problem context, goals, rationale behind
+    recommendations, and trade-offs discussed.
+    2.  **Information Synthesis:** Synthesize the analyzed information to populate *each section* of the
+    RFC template thoughtfully. This is not just copying text, but rephrasing and structuring information
+    appropriately for an RFC audience.
+    3.  **Template Adherence:** Strictly follow the specified markdown RFC structure, ensuring all sections
+    are present and correctly formatted.
+    4.  **Content Generation:**
+        *   **TL;DR:** Generate a concise, informative summary (1-3 sentences) capturing the essence of
+        the proposal.
+        *   **Context and Scope:** Elaborate on the background provided in the research, clearly defining
+        the problem being addressed and the boundaries (scope) of the proposed solution.
+        *   **Goals (and Non-Goals):** Distill the primary objectives the proposed solution aims to achieve.
+        Explicitly state non-goals if mentioned in the research or if they can be reasonably inferred to
+        clarify scope.
+        *   **The Actual Design:** Translate the recommended option(s), requirements, and implementation
+        considerations from the research report into a coherent description of the proposed technical design. Focus on *what* is being built and *how* it works at a conceptual level.
+        *   **Alternatives Considered:** Accurately populate the comparison table using information from
+        the 'Options' section of the research report. Summarize the key trade-offs and reasoning for the
+        preferred approach based on the 'Decision' section of the research.
+        *   **Impact:** Analyze the proposed design and infer potential impacts on systems, teams,
+        processes, or users based on the research context.
+        *   **Discussion:** Seed this section with potential questions, open issues, or points needing
+        clarification identified during the synthesis process or noted in the research.
+        *   **Final Decision:** Clearly state the recommended solution derived from the research report's
+        'Decision' section and briefly summarize the primary justification.
+        *   **Follow-ups:** Identify potential next steps, future work, or unresolved questions mentioned
+        or implied in the research report.
+        *   **Related:** Include links to sources cited in the research report, if appropriate, or leave
+        placeholder if none are relevant.
+    5.  **Handling Gaps:** If the research report lacks clear information for a mandatory RFC section,
+    make a reasonable attempt to infer it based on the available context or explicitly state that the
+    information is missing (e.g., "Details on specific impact to Team X were not covered in the initial
+    research."). Do not leave sections completely blank unless truly no information is available or
+    inferable.
+
+    **Rules**:
+    - Do **NOT** change the **meaning** of the 'background & context', 'topic', 'problem definition',
+    'requirements & constraints' provided in the input notes by the user.
+
+  expected_output: >
+    A comprehensive markdown RFC draft document structured *exactly* as follows, with all sections
+    populated thoughtfully based on the analysis and synthesis of the input research report:
+
+    ```markdown
+    ## 📜 Table of contents
+    ---
+    ```table-of-contents```
+    ## 🤓 TL;DR;
+    ---
+    *Generated concise summary of the RFC's purpose and proposed solution.*
+
+    ## 🔭 Context and Scope
+    ---
+    *Detailed description of the problem background, current state, and the boundaries of what this
+    RFC addresses, derived from the research report.*
+
+    ## 🎯 Goals (and Non-Goals)
+    ---
+    *Bulleted list of specific, measurable goals for the proposed solution.*
+    *   Goal 1: ...
+    *   Goal 2: ...
+    *   *Non-Goal 1 (Optional):* ...
+    *   *Non-Goal 2 (Optional):* ...
+
+    ## 🦉 The Actual Design
+    ---
+    *A clear description of the proposed solution's architecture, components, data flows, and key
+    technical mechanisms, synthesized from the research report's recommended option, requirements, and
+    implementation plan.*
+
+    ## 🌈 Alternatives considered
+    ---
+    *Populated comparison table summarizing the options evaluated in the research report.*
+
+    |          | Option 1 ([Name]) | Option 2 ([Name]) | Option 3 ([Name]) |
+    | -------- | ----------------- | ----------------- | ----------------- |
+    | Overview | [Brief Desc]      | [Brief Desc]      | [Brief Desc]      |
+    | Links    | [Source Link]     | [Source Link]     | [Source Link]     |
+    | Pros     | - Pro 1 <br/> - Pro 2 | - Pro 1 <br/> - Pro 2 | - Pro 1 <br/> - Pro 2 |
+    | Cons     | - Con 1 <br/> - Con 2 | - Con 1 <br/> - Con 2 | - Con 1 <br/> - Con 2 |
+    | Other    | [e.g., GCP details] | [e.g., GCP details] | [e.g., GCP details] |
+
+    **Comparison Summary & Rationale:**
+    *Detailed explanation comparing the alternatives, highlighting key trade-offs, and justifying the
+    choice based on the research report's 'Decision' section.*
+
+    ## 💥 Impact
+    ---
+    *Analysis of how the proposed solution is expected to affect existing systems, workflows, teams,
+    costs, performance, security, etc., based on the research.*
+
+    ## 💬 Discussion
+    ---
+    *Initial list of open questions, areas needing further clarification, or potential discussion
+    points identified during RFC creation.*
+    *   Question 1: ...
+    *   Point for discussion 2: ...
+
+    ## 🤝 Final decision
+    ---
+    *Clear statement of the recommended approach based on the research, with a brief summary of the
+    core reasoning.*
+
+    ## ☝️ Follow-ups
+    ---
+    *List of potential next steps, further research needed, or tasks required for implementation.*
+    *   Task 1: ...
+    *   Task 2: ...
+
+    ## 🔗 Related
+    ---
+    *Links to relevant source documents cited in the research report or other related internal
+    documentation/RFCs, if applicable.*
+    *   [Source Name](Link)
+    ```
+  context:
+    - rfc_research_assistant
+  async_execution: false
+
+technical_diagram_illustrator:
+  agent: technical_diagram_illustrator
+  description: >
+    **Goal:** To generate accurate and **strictly syntactically valid** Mermaid diagram code representing the core
+    architecture or flow described in the RFC draft. Invalid Mermaid syntax is unacceptable.
+
+    **Core Responsibilities:**
+    1.  **Parse RFC Section:** Carefully read and interpret the '🦉 The Actual Design' section of the
+    draft RFC document provided by the `rfc_author`.
+    2.  **Identify Key Elements:** Extract the essential components (e.g., services, databases, APIs,
+    data sources, user roles, processes, data flows) and their relationships/interactions as described in
+    the text. Use simple alphanumeric IDs where possible for components.
+    3.  **Select Appropriate Diagram Type:** Based on the nature of the description, choose the most
+        suitable Mermaid diagram type. Examples:
+        *   `graph` (flowchart): Good for showing process steps, data flow, or high-level component
+        connections. **Prefer `graph TD` or `graph LR` for simplicity unless another type is clearly required.**
+        *   `sequenceDiagram`: Ideal for illustrating interactions between components over time (e.g.,
+        API call sequences).
+        *   `classDiagram`: Useful for showing static structure, objects, and their relationships/attributes
+        (less common for typical RFCs but possible).
+        *   `stateDiagram`: Suitable for representing the lifecycle or states of a component or process.
+        *   Consider C4 model diagrams (`C4Context`, `C4Container`, `C4Component`) if the description
+        implies a structured architectural breakdown. Use `graph` for simpler cases.
+    3a. **Prioritize Clarity & Simplicity:** If the design is complex, focus first on representing the main components and primary flows. Use subgraphs if it improves readability. Ensure the basic structure is valid before adding complex details or numerous connections.
+    4.  **Translate to Mermaid Syntax:** Convert the identified elements and relationships into valid
+        Mermaid syntax corresponding to the chosen diagram type. Pay close attention to:
+        *   Correct node definition (shape, text). Use simple alphanumeric IDs (e.g., `ServiceA`, `DB1`). Enclose labels containing spaces, parentheses, or special characters in double quotes (e.g., `N1["Label with (special) chars"]`).
+        *   Appropriate arrow types/styles (`-->`, `--->`, `-.->`, `==>`). Ensure they connect valid node IDs.
+        *   Labels on connections where necessary (`-- Label -->`).
+        *   Structuring for clarity (e.g., using subgraphs if helpful).
+    5.  **Ensure Accuracy:** The generated diagram MUST visually represent the system or process described
+    in the '🦉 The Actual Design' text. Do not introduce components or connections not mentioned.
+    6.  **Syntax Validation and Correction (Mandatory Check):** Before finalizing the output, perform a rigorous syntax check specific to the chosen diagram type (`graph`, `sequenceDiagram`, etc.). Follow these steps meticulously:
+        *   **Verify Keyword:** Does the diagram start exactly with `graph TD`, `graph LR`, `sequenceDiagram`, `C4Context`, etc.?
+        *   **Check Node Definitions:** Is every node defined correctly before use (or implicitly if allowed)? Format: `id[Label]`, `id("Label")`, etc. Are IDs valid (alphanumeric preferred)? Are labels with spaces/special chars correctly enclosed in double quotes (`"Like This (Example)"`)?
+        *   **Validate Connections:** Are arrow types valid (`-->`, `--->`, `-.->`, `==>`, `->>`, `->>` etc.)? Do they connect *defined* node IDs? Are connection labels formatted correctly (`-- Text -->`)?
+        *   **Balance Brackets/Quotes:** Ensure all `[ ]`, `{ }`, `( )` and `" "` are correctly paired and closed.
+        *   **No Comments/Markdown:** TRIPLE CHECK that *no* comments (`%%`, `//`) or markdown formatting (`*`, `#`, numbering) exist within the final Mermaid code block itself.
+        *   **Compare to Examples:** Does the generated code look like the provided valid examples in terms of structure and syntax?
+        *   **Correction Loop:** If ANY syntax errors are found based on these checks, DO NOT output the faulty code. Identify the specific error (e.g., "mismatched quotes on node X," "invalid arrow Y->Z," "node A used but not defined") and *regenerate* the faulty line or section to fix it. Repeat the validation check until the code passes ALL checks.
+    7.  **Provide Clean Output:** Output *only* the final, validated Mermaid code block.
+
+    **Examples of Common Mermaid Patterns:**
+    # ... (keep examples as they are good)
+
+    **Pitfalls to Avoid (Strictly Enforced):**
+    *   Do **NOT** add explanatory notes or comments inside the ` ```mermaid ... ``` ` block (e.g., using `%%`, `//`, `*`, `#`).
+    *   **Quote Correctly:** Text in nodes/labels containing spaces, parentheses, or special characters MUST be enclosed in double quotes. Example: `F["Serialize Objects (.SerializeToString)"];` is correct, `F[Serialize Objects (.SerializeToString)];` is **invalid**.
+    *   Do **NOT** number or bullet-point **ANY** text (e.g. node labels).
+    *   Use **Valid Node IDs:** Node IDs should ideally be simple alphanumeric strings (e.g., `apiGateway`, `userDB`). Avoid spaces or special characters in IDs themselves. If unavoidable, quote the ID ` "My Node ID"[Label]`, but prefer simple IDs.
+
+  expected_output: >
+    A single string containing **strictly valid** Mermaid diagram syntax, enclosed in a markdown code block, that
+    accurately visualizes the core concepts described in the '🦉 The Actual Design' section of the
+    input RFC draft. The output MUST NOT contain any other text, introductions, or explanations outside the code block.
+
+    *Example Valid Output:*
+    ```markdown
+    ```mermaid
+    graph TD
+        Input[Data Source] --> Process{"Data Validation (Rule Engine)"};
+        Process -- Valid --> Transform["Data Transformation (.ToUpper())"];
+        Process -- Invalid --> ErrorLog[Log Error];
+        Transform --> Output[Target Storage];
+    ```
+    ```
+  context:
+    - rfc_author
+  async_execution: false
+
+peer_reviewer:
+  agent: >
+    peer_reviewer
+  description: >
+    **Goal:** To act as a knowledgeable technical peer, critically evaluating a draft RFC and its
+    accompanying diagram for technical feasibility, architectural soundness, potential pitfalls, and
+    alignment with team standards and the broader technical ecosystem (specifically the Enterprise
+    Data Platform and GCP).
+
+    **Core Responsibilities:**
+
+    1.  **Understand the Proposal:** Thoroughly read and comprehend the entire draft RFC provided by
+    the `rfc_author`, including the problem statement, context, goals, proposed design, alternatives
+    considered, and rationale.
+    2.  **Scrutinize the Technical Design ('🦉 The Actual Design'):**
+        *   **Feasibility:** Assess if the proposed solution can realistically be built and operated
+        using the suggested technologies and approaches, particularly within the GCP environment.
+        Consider known limitations or complexities.
+        *   **Soundness & Best Practices:** Evaluate the architectural choices. Does the design
+        follow established software engineering and data engineering principles (e.g., modularity,
+        separation of concerns, idempotency where applicable)? Does it align with GCP best practices
+        for the services involved? Are there potential anti-patterns?
+        *   **Component Choice:** Question the selection of specific technologies or services. Are
+        they appropriate for the task? Are there simpler, more robust, or more cost-effective alternatives
+        within the approved stack that were overlooked?
+        *   **Data Flow & Processing:** Analyze the proposed movement and transformation of data.
+        Are the steps logical? Is error handling considered? Are potential bottlenecks or data consistency
+        issues addressed?
+        *   **Scalability & Performance:** Consider if the design can handle expected (and potentially future) load. Are there obvious scaling limitations? Are performance implications discussed?
+        *   **Maintainability & Testability:** Evaluate how easy the proposed solution will be to understand, modify, debug, and test. Is the design overly complex?
+        *   **Integration Points:** Examine how the proposed solution interacts with existing systems or
+        services within the Enterprise Data Platform. Are the integration points well-defined? Are potential
+        impacts on upstream/downstream systems considered?
+    3.  **Validate the Mermaid Diagram:**
+        *   **Syntax Check:** Perform a basic check to ensure the Mermaid code provided by the
+        `technical_diagram_illustrator` is syntactically valid and likely to render.
+        *   **Accuracy & Consistency:** Compare the visual representation implied by the Mermaid code
+        against the textual description in the '🦉 The Actual Design' section. Does the diagram accurately
+        reflect the components, connections, and flow described? Are there discrepancies, omissions, or
+        additions in the diagram compared to the text? Is the level of detail appropriate?
+    4.  **Assess Alternatives & Decision:** Review the '🌈 Alternatives considered' and '🤝 Final decision'
+    sections. Does the comparison seem fair? Is the rationale for the chosen solution technically sound and
+    clearly articulated based on the comparison? Were any viable technical alternatives missed?
+    5.  **Identify Technical Risks & Pitfalls:** Proactively identify potential technical problems or
+    challenges that might arise during implementation or operation (e.g., race conditions, deployment
+    complexities, monitoring gaps, specific failure modes). This complements, but is distinct from, the
+    operational/business risks assessed by the `operational_and_risk_assessor`.
+    6.  **Provide Constructive Feedback:** Offer specific, actionable suggestions for improvement. This
+    could include recommending alternative approaches, suggesting specific GCP configurations, pointing
+    out areas needing more technical detail, or proposing refinements to the design or diagram. Frame
+    feedback constructively.
+    7.  **Contextual Awareness:** Ensure the evaluation considers the specific technical domain (e.g.,
+    Streaming, MLOps, Infrastructure, BI) mentioned in the RFC and its fit within the overall Enterprise
+    Data Platform architecture and standards.
+  expected_output: >
+    The original RFC markdown document provided as input, but augmented with **inline comments** providing
+    the technical peer review feedback.
+    *   Feedback MUST be embedded directly within the RFC text using markdown comment syntax: `<!-- Peer
+    Reviewer Comment: [Your feedback, question, or suggestion here] -->` or similar clearly marked
+    annotations (e.g., `**[Peer Review Note]:** ...`).
+    *   Comments should be placed adjacent to the specific text they refer to.
+    *   Feedback on the overall design or major sections can be placed at the beginning or end of those
+    sections.
+    *   Specific feedback regarding the Mermaid diagram's accuracy and syntax MUST be placed as comments
+    within or immediately following the '🦉 The Actual Design' section, close to the diagram itself.
+    *   The output is the *modified RFC document itself*, not a separate report.
+
+    **Example Snippet of Expected Output:**
+
+    ```markdown
+    ## 🦉 The Actual Design
+    ---
+    The proposed solution involves using Cloud Function Gen2 triggered by Cloud Storage events.
+    <!-- Peer Reviewer Comment: Is Cloud Function the right choice here vs. Cloud Run? Consider potential cold start implications for latency-sensitive steps. Also, Gen2 offers concurrency improvements, which is good, but does the downstream system handle concurrent writes well? -->
+    The function will parse the incoming CSV file, validate the schema using a predefined BigQuery table schema...
+    <!-- Peer Reviewer Comment: How is the schema managed/updated? Is it fetched dynamically? Hardcoded? Needs clarification for maintainability. -->
+    ...and stream the data into the `raw_events` BigQuery table using the Storage Write API for low-latency ingestion.
+    <!-- Peer Reviewer Comment: Storage Write API is a good choice for streaming. Ensure appropriate error handling and retry logic for transient API errors is included in the function code. -->
+
+    ```mermaid
+    graph TD
+        A[GCS Bucket Event] --> B{Cloud Function Gen2};
+        B --> C[Parse & Validate CSV];
+        C -- Valid --> D{BQ Storage Write API};
+        C -- Invalid --> E[Log Error to PubSub];
+        D --> F[(raw_events Table)];
+    ```
+    <!-- Peer Reviewer Comment: Diagram Accuracy: The diagram matches the basic flow described. Suggest adding the error logging Pub/Sub topic explicitly as a node (E --> G[(Error Topic)]) for completeness. Syntax looks valid. -->
+    <!-- Peer Reviewer Comment: Overall Design Soundness: The general approach is feasible. Key areas to detail further in implementation are schema management strategy and robust error handling/retry logic for the Storage Write API calls. -->
+
+    ## 🌈 Alternatives considered
+    ---
+    |          | Option 1 (Cloud Function) | Option 2 (Dataflow) |
+    | -------- | ------------------------- | ------------------- |
+    | Overview | Event-driven, serverless  | Batch/Streaming ETL |
+    <!-- Peer Reviewer Comment: Was a simple Cloud Run service triggered by Pub/Sub (listening to GCS notifications) considered? Might offer better control over execution environment and avoid cold starts if frequently invoked. -->
+    | ...      | ...                       | ...                 |
+    ```
+  context:
+    - rfc_author  # Provides the draft RFC
+    - technical_diagram_illustrator # Provides the Mermaid diagram code
+  async_execution: true
+
+operational_and_risk_assessor:
+  agent: >
+    operational_and_risk_assessor
+  description: >
+    **Goal:** To meticulously analyze a draft RFC from an operational, security, cost, compliance, and
+    readiness perspective, identifying potential risks, impacts, and requirements for successful deployment
+    and sustained operation within the Enterprise Data Platform context (specifically GCP).
+
+    **Core Responsibilities:**
+
+    1.  **Understand the Proposal:** Thoroughly read and comprehend the entire draft RFC, focusing on the
+    proposed design, its intended function, and how it fits into the existing ecosystem.
+    2.  **Assess Operational Impact:**
+        *   **Monitoring & Alerting:** Does the RFC adequately address how the solution will be monitored?
+        Are key metrics identified? Is there a plan for alerting on failures or performance degradation? What tools are proposed (e.g., Cloud Monitoring, Grafana)?
+        *   **Logging:** Is logging strategy defined? Are log formats considered? Where will logs be stored
+        and analyzed (e.g., Cloud Logging)?
+        *   **Deployment & Rollback:** How will the solution be deployed (e.g., CI/CD, manual)? Is a
+        rollback strategy considered in case of deployment failure?
+        *   **On-Call & Support:** What is the expected impact on team support load? Are runbooks or
+        troubleshooting guides planned?
+        *   **Dependencies:** Does the proposal clearly identify dependencies on other systems or
+        infrastructure? How are failures in dependencies handled?
+        *   **SLOs/SLAs:** How does the proposal affect existing Service Level Objectives or Agreements?
+        Are new SLOs proposed for this system?
+    3.  **Evaluate Security Risks:**
+        *   **Authentication & Authorization:** How are users or services accessing the solution
+        authenticated and authorized? Are principles of least privilege applied (e.g., specific IAM roles)?
+        *   **Data Security:** How is data protected at rest and in transit (encryption)? Are sensitive
+        data types (PII, secrets) handled securely? How is secret management addressed (e.g., Secret Manager)?
+        *   **Network Security:** Are network controls considered (e.g., VPC Service Controls, firewall rules)?
+        Is the exposure surface minimized?
+        *   **Vulnerabilities:** Does the design introduce known vulnerability patterns? Is input validation
+        discussed?
+        *   **Audit Logging:** Are security-relevant events logged for auditing purposes?
+    4.  **Analyze Cost Implications:**
+        *   **Estimation Accuracy:** Does the RFC provide a reasonable cost estimate? Are the underlying
+        assumptions clear (e.g., data volume, traffic, instance types)?
+        *   **Cost Drivers:** What are the primary cost drivers (e.g., compute, storage, network egress,
+        specific service licenses)?
+        *   **Operational Costs:** Are ongoing operational costs considered beyond infrastructure (e.g.,
+         monitoring tools, potential support effort)?
+        *   **Optimization:** Are there obvious opportunities for cost optimization (e.g., choosing different
+        service tiers, using preemptible VMs, data lifecycle policies)?
+        *   **Tracking:** Is cost tracking planned (e.g., using labels)?
+    5.  **Verify Compliance Adherence:**
+        *   **Regulatory Requirements:** Does the RFC consider relevant regulations (e.g., GDPR, CCPA, HIPAA)?
+        How is compliance demonstrated?
+        *   **Data Handling:** If handling sensitive data (e.g., PII), are necessary controls like consent
+        management, data minimization, purpose limitation, and data subject rights addressed?
+        *   **Data Residency:** Are data residency requirements considered and met?
+        *   **Internal Policies:** Does the proposal align with internal data governance and security
+        policies?
+    6.  **Determine Readiness Requirements & Gaps:**
+        *   **Infrastructure:** What specific infrastructure needs provisioning (e.g., GCP projects,
+        networks, databases, IAM roles)? Is Infrastructure as Code (IaC) planned?
+        *   **Dependencies:** Are external software libraries or service dependencies identified? How will
+        they be managed?
+        *   **Training:** Is specific training required for the development or operations team?
+        *   **Documentation:** What documentation is needed for deployment, operation, and support (e.g.,
+        runbooks, design updates)?
+        *   **Testing:** Does the RFC mention testing strategies related to operational aspects (e.g.,
+        load testing, failure injection)?
+    7.  **Propose Mitigations & Actions:** For each identified risk, gap, or concern, suggest concrete,
+    practical mitigation strategies, necessary actions, or areas requiring further investigation.
+  expected_output: >
+    The original RFC markdown document provided as input, but augmented with **inline comments** providing the operational and risk assessment feedback.
+    *   Feedback MUST be embedded directly within the RFC text using markdown comment syntax: `<!-- Ops & Risk Comment: [Your feedback, question, or suggestion here] -->` or similar clearly marked annotations (e.g., `**[Ops/Risk Note]:** ...`).
+    *   Comments should be placed adjacent to the specific text they refer to (e.g., cost comments near cost estimates, security comments near relevant design components).
+    *   Feedback covering broader aspects (like overall readiness or operational impact) can be placed at the beginning or end of relevant sections (e.g., 'Impact', 'Follow-ups') or as a summary comment at the end of the document.
+    *   The output is the *modified RFC document itself*, not a separate report.
+
+    **Example Snippet of Expected Output:**
+
+    ```markdown
+    ## 🦉 The Actual Design
+    ---
+    The solution utilizes a Cloud Run service to process incoming requests via HTTPS.
+    <!-- Ops & Risk Comment: Security: Ensure the Cloud Run service only accepts authenticated requests (e.g., using IAP or validating JWTs). Specify the authentication method. -->
+    <!-- Ops & Risk Comment: Operations: Define SLOs for request latency and success rate for this service. How will these be monitored and alerted on? -->
+    Data will be stored temporarily in a Memorystore (Redis) instance before being written to BigQuery.
+    <!-- Ops & Risk Comment: Cost: Memorystore can be costly. Is the TTL strategy defined to manage data volume? Was the capacity sized based on expected load? Justify Memorystore vs. other caching/temporary storage options from a cost perspective. -->
+    <!-- Ops & Risk Comment: Security: Ensure encryption in transit is enabled for the connection to Memorystore. -->
+    Sensitive user identifiers will be pseudonymized using Cloud DLP before storage.
+    <!-- Ops & Risk Comment: Compliance: Good use of DLP for pseudonymization. Ensure the DLP template configuration aligns with GDPR/CCPA requirements for the specific PII types handled. Document the process for audit purposes. -->
+
+    ## 💥 Impact
+    ---
+    This change is expected to improve data processing latency significantly.
+    <!-- Ops & Risk Comment: Operations: Update on-call runbooks with troubleshooting steps for the new Cloud Run service and Memorystore instance. -->
+    Estimated monthly cost is ~$200 based on projected traffic.
+    <!-- Ops & Risk Comment: Cost: Break down the $200 estimate by service (Cloud Run, Memorystore, BigQuery storage/queries, DLP, Logging/Monitoring). Add cost tracking labels (e.g., 'service:my-new-processor') to resources. -->
+
+    ## ☝️ Follow-ups
+    ---
+    *   Develop detailed implementation plan.
+    <!-- Ops & Risk Comment: Readiness: Add specific follow-up tasks: 1. Create Terraform scripts for infra provisioning. 2. Develop monitoring dashboards in Cloud Monitoring. 3. Document runbook for L1 support. 4. Schedule team training on Cloud Run deployment/management. -->
+    ```
+  context:
+    - rfc_author # Provides the draft RFC to review
+  async_execution: true
+
+editor:
+  agent: >
+    editor
+  description: >
+    This agent is designed to act as a central processor for refining technical Request for Comments
+    (RFC) documents based on structured feedback. Its core responsibility is to take a draft RFC and
+    consolidate input from various review sources into a single, updated document that adheres to team
+    standards and is ready for final human review.
+
+    The agent performs the following specific steps:
+    1.  **Ingest Inputs:** Reads the draft RFC markdown document, the content of the provided
+    Structured Evaluation Report and Operational & Risk Assessment Report, and the Mermaid diagram.
+    2.  **Consolidate Feedback:** Extracts and organizes feedback points, technical issues, risks,
+    alternative approaches, concerns, justifications, and mitigation strategies from the evaluation
+    and risk assessment reports.
+    3.  **Integrate Feedback:** Applies the consolidated feedback directly into the relevant sections
+    of the draft RFC markdown document. This includes incorporating suggested changes, addressing
+    identified issues, and adding notes about risks or alternative approaches where appropriate.
+    4.  **Handle Conflicting Feedback:** Identifies instances where feedback points from different
+    sources contradict or propose incompatible changes. These conflicts are flagged *within the output
+    document* (e.g., using markdown comments or a dedicated "Reviewer Notes" section) for the author/team
+    to resolve, as the agent does not have the capability to mediate or make subjective decisions on
+    conflicting technical opinions.
+    5.  **Edit for Quality:** Performs comprehensive editing of the integrated document, focusing on:
+        *   Clarity and conciseness of language.
+        *   Correct grammar, spelling, and punctuation.
+        *   Consistency in terminology used throughout the document, adhering to the team's style guide.
+    6.  **Ensure Completeness (Template Adherence):** Checks that all required sections specified by
+    the RFC template/style guide are present in the document. It verifies that these sections contain
+    *some* content, flagging any required sections that are empty or appear to have only placeholder
+    text, but does not make subjective judgments on the *adequacy* or *quality* of the content within
+    a section unless specific criteria are provided in the style guide.
+    7.  **Verify Key Elements:** Checks for the *presence* of discussions around key decisions,
+    trade-offs, and rationales within the relevant sections, as guided by the template/style guide.
+    It flags sections where these elements are expected but seem missing or are not clearly identifiable
+    based on the document structure and content, but does not evaluate the *soundness* or *completeness*
+    of the rationale itself.
+    8.  **Format Document:** Ensures the final markdown document adheres to the team's specified
+    formatting standards as outlined in the RFC template/style guide (e.g., heading levels, list
+    formatting, code block usage). This also involves placing the Mermaid diagram in a logical place
+    inside the 'proposed solution' section.
+    9.  **Generate Output:** Produces a single, revised markdown document containing the integrated
+    feedback and applied edits.
+
+    **Constraints:**
+    *   The agent operates solely on the provided text inputs (draft RFC, the two reports, and Mermaid
+    diagram).
+    *   It cannot perform external research or access information beyond the provided inputs and its
+    internal knowledge base (including the template/style guide).
+    *   It cannot make subjective technical decisions or resolve conflicting feedback; it can only
+    identify and flag such instances. The agent must do so in the 'discussion' section.
+    *   It cannot interact with external platforms (like collaboration tools) or file systems beyond
+    reading the initial inputs and producing the final output.
+  expected_output: >
+    The output should be a revised RFC document in markdown format, following the original RFC template.
+
+    **Meaning of 'revised'**: A refined version of the draft RFC with integrated feedback from the
+    evaluation and risk assessment reports, edited for clarity and consistency, and formatted according
+    to standards.
+
+    **Example**:
+      ```markdown
+      # RFC Title (Revised) (you can generate an appropriate title if it is not provided)
+
+      ## 1. Introduction
+      Brief overview... (incorporating feedback if any)
+
+      ## 2. Problem Statement
+      Describe the issue... (updated based on evaluation)
+
+      ## 3. Proposed Solution
+      Details of the solution... (potentially updated with alternative considerations or risk notes)
+
+      <!-- Place Mermaid diagram here -->
+
+      ## 4. Alternatives Considered
+      Discuss other options... (may include details from evaluation report)
+
+      ## 5. Security Considerations
+      Potential risks... (updated based on risk assessment)
+
+      <!-- Reviewer Note: Conflicting feedback received on [Section X]. Reviewer A suggested Y, Reviewer B suggested Z. Please review and resolve. -->
+
+      ... (other sections as per template, with integrated feedback and edits)
+
+      ## Reviewer Feedback Summary (Optional Section Added by Agent)
+      *   Issues noted in technical peer review report: ...
+      *   Risks highlighted in Risk Assessment: ...
+      *   Conflicting feedback points flagged in document: See comments in sections [Y, Z].
+      ```
+    * **Interpretation Guidelines:**
+        *   The output is the final version proposed by the agent, ready for human review.
+        *   Sections containing integrated feedback or addressing specific points from the reports should reflect those changes directly in the text.
+        *   Look for markdown comments (`<!-- ... -->`) or a dedicated summary section (if added by the agent) to identify where conflicting feedback was noted or where the agent flagged potential issues (like empty required sections or missing key elements).
+        *   The document should be checked against the team's RFC template and style guide for final verification.
+  context:
+    - rfc_author
+    - technical_diagram_illustrator
+    - peer_reviewer
+    - operational_and_risk_assessor
+  async_execution: false
