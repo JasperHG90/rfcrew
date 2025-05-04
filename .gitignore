@@ -162,9 +162,10 @@ data
 storage
 prompts
 
-assets
 docker-compose.yml
 
 db
 
 prototyping
+
+openlit
