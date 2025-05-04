@@ -1,7 +1,9 @@
+import os
 import logging
 import pathlib as plb
 from typing import Any
-from crewai import Agent, Task, Crew, Process
+
+from crewai import Agent, Task, Crew, Process, LLM
 from crewai.tools import BaseTool
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool, WebsiteSearchTool
 
@@ -21,6 +23,7 @@ def get_tools() -> dict[str, BaseTool]:
 					provider='google',  # or google, openai, anthropic, llama2, ...
 					config=dict(
 						model='gemini-2.5-flash-preview-04-17',
+						api_key=os.environ.get('GOOGLE_API_KEY'),
 					),
 				),
 				embedder=dict(
@@ -28,6 +31,7 @@ def get_tools() -> dict[str, BaseTool]:
 					config=dict(
 						model='models/embedding-004',
 						task_type='retrieval_document',
+						# google_api_key=os.environ.get('GOOGLE_API_KEY'),
 					),
 				),
 			)
@@ -62,7 +66,11 @@ class RFCrew:
 				logger.debug(f'Parsing agent: {agent_name}')
 				agent_tools_config = agent_config.pop('tools', [])
 				_tools = [tools[tool_name.strip()] for tool_name in agent_tools_config]
-				agents[agent_name] = Agent(**agent_config, tools=_tools)
+				llm_config = agent_config.pop('llm')
+				_llm = LLM(
+					model=llm_config, temperature=0.2, api_key=os.environ.get('GOOGLE_API_KEY')
+				)
+				agents[agent_name] = Agent(**agent_config, tools=_tools, llm=_llm)
 			logger.info(f'Successfully parsed {len(agents)} agents.')
 			logger.debug(f'Parsed agents: {list(agents.keys())}')
 			return agents
@@ -125,7 +133,11 @@ class RFCrew:
 			process=Process.sequential,
 			verbose=self.verbose,
 			planning=planning,
-			planning_llm=planning_llm,
+			planning_llm=LLM(
+				model=planning_llm, temperature=0.2, api_key=os.environ.get('GOOGLE_API_KEY')
+			)
+			if planning_llm
+			else None,
 		)
 		logger.info('Crew created.')
 		return crew

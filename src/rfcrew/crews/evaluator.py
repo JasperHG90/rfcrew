@@ -19,7 +19,7 @@ class EvaluationAgent:
 
 	@property
 	def _llm(self):
-		return LLM(model=self._model, temperature=0.2, api_key=os.environ.get('GEMINI_API_KEY'))
+		return LLM(model=self._model, temperature=0.2, api_key=os.environ.get('GOOGLE_API_KEY'))
 
 	@property
 	def _agent(self) -> Agent:

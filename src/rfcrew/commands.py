@@ -2,7 +2,9 @@ import logging
 from typing import cast
 import pathlib as plb
 
-from .flows import RFCFlow
+from crewai import CrewOutput
+
+from .flows import RFCFlow, RFCFlowState
 from .crews.evaluator import EvaluationAgent, EvaluationAgentModel
 
 logger = logging.getLogger('rfcrew.commands')
@@ -12,7 +14,7 @@ def generate_rfc_from_notes(
 	path_to_notes: plb.Path,
 	agents_config: plb.Path,
 	tasks_config: plb.Path,
-):
+) -> tuple[RFCFlowState, None | CrewOutput]:
 	"""
 	Generate an RFC from the provided notes.
 	"""
@@ -31,7 +33,7 @@ def generate_rfc_from_notes(
 		}
 	)
 	logger.info('RFC generation completed successfully.')
-	return result
+	return flow.state, result
 
 
 def evaluate_rfc_against_ground_truth(

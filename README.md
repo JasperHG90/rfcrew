@@ -1,6 +1,5 @@
 # RFCrew
 
-
 > [!WARNING]
 > This library is in development. Use at your own risk.
 
@@ -15,6 +14,10 @@ A crew of AI agents for creating and evaluating Requests for Comments (RFCs). Th
 *   **Configurable Agents and Tasks:** Define agent roles, goals, backstories, and tasks using YAML configuration files.
 *   **Tool Usage:** Agents can utilize tools like web search and web scraping to gather information.
 *   **Notes Scoring:** Initial notes are scored for sufficiency before proceeding with RFC generation.
+
+## Caution
+
+This is AI-generated content. Small changes in the input notes can make a large difference.
 
 ## Usage
 
@@ -47,7 +50,6 @@ The CLI can be configured using environment variables or command-line options.
 
 *   `RFCREW_OUTPUT_DIRECTORY`: Specifies the output directory for generated files (default: current working directory).
 *   `RFCREW_VERBOSE`: Enables debug logging.
-*   `OTEL_EXPORTER_OTLP_ENDPOINT`: Configures the OpenTelemetry endpoint for tracing.
 *   `RFCREW_AGENTS_CONFIG`: Path to the agents configuration file (required for `generate` command).
 *   `RFCREW_TASKS_CONFIG`: Path to the tasks configuration file (required for `generate` command).
 
@@ -100,7 +102,9 @@ The project includes a `justfile` with several commands to simplify common devel
 
 ## Limitations
 
-Currently, only the Gemini model is supported.
+Currently, only Gemini models are supported.
+
+Mermaid syntax is often a bit off.
 
 ## For later
 
@@ -111,3 +115,4 @@ Currently, only the Gemini model is supported.
 - Testing setup
 - Mermaid MCP syntax checking server
 - Tweak models used to set up the crew
+- More models

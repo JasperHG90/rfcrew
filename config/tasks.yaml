@@ -25,9 +25,13 @@ rfc_research_assistant:
     6.  **Citation:** Properly cite sources using hyperlinks for all significant claims or data points
     derived from external resources.
 
-    **Critical Constraint:** Your research, analysis, and recommendations MUST be tailored to the context
-    of **GCP data engineering**. Do **not** change the **meaning** of the background, context, topic,
+    **Critical Constraints:**
+    - Your research, analysis, and recommendations MUST be tailored to the context
+    of **GCP data engineering**.
+    - Do **not** change the **meaning** of the background, context, topic,
     problem definition, requirements, or constraints provided in the original user notes.
+    - You **MAY NOT** change the original notes or make assumptions about requirements. In such cases, be clear that you're
+    interpreting a requirement.
 
     **RFC Notes for this task:** {notes}
   expected_output: >
@@ -140,6 +144,9 @@ rfc_author:
     **Rules**:
     - Do **NOT** change the **meaning** of the 'background & context', 'topic', 'problem definition',
     'requirements & constraints' provided in the input notes by the user.
+    - You **MAY NOT** change the original notes or make assumptions about requirements. In such cases,
+    be clear that you're interpreting a requirement.
+    - You **ALWAYS** prefer the most simple solution that meets the requirements.
 
   expected_output: >
     A comprehensive markdown RFC draft document structured *exactly* as follows, with all sections
@@ -560,22 +567,38 @@ editor:
       ```markdown
       # RFC Title (Revised) (you can generate an appropriate title if it is not provided)
 
-      ## 1. Introduction
+      ## 📜 Table of contents
+      ---
+
+      ## 🤓 TL;DR;
+      ---
+      Summary of the RFC's purpose and proposed solution... (incorporating feedback if any)
+
+      ## 🔭 Context and Scope
+      ---
       Brief overview... (incorporating feedback if any)
+      Describe the issue/problem statement... (updated based on evaluation)
 
-      ## 2. Problem Statement
-      Describe the issue... (updated based on evaluation)
+      ## 🎯 Goals (and Non-Goals)
+      ---
+      Goals and non-goals of the RFC... (incorporating feedback if any)
 
-      ## 3. Proposed Solution
+      ## 🦉 The Actual Design
+      ---
       Details of the solution... (potentially updated with alternative considerations or risk notes)
 
       <!-- Place Mermaid diagram here -->
 
-      ## 4. Alternatives Considered
-      Discuss other options... (may include details from evaluation report)
+      ## 🌈 Alternatives considered
+      ---
+      Populated comparison table ...
 
-      ## 5. Security Considerations
-      Potential risks... (updated based on risk assessment)
+      ## 💥 Impact
+      ---
+      Analysis of how the proposed solution is expected to affect existing systems, workflows, teams,
+      costs, performance, security, etc., based on the research.
+
+      If there are any specific risks or issues identified in the evaluation or risk assessment reports, place them here.
 
       <!-- Reviewer Note: Conflicting feedback received on [Section X]. Reviewer A suggested Y, Reviewer B suggested Z. Please review and resolve. -->
 
