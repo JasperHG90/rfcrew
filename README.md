@@ -3,7 +3,7 @@
 > [!WARNING]
 > This library is in development. Use at your own risk.
 
-A crew of AI agents for creating and evaluating Requests for Comments (RFCs). This project leverages CrewAI to orchestrate agents that can generate RFCs from notes and evaluate them against a ground truth.
+A crew of AI agents for creating and evaluating Requests for Comments (RFCs). This project uses CrewAI to orchestrate agents that can generate RFCs from notes and evaluate them against a ground truth.
 
 ![Crew](./assets/RFCrew.png)
 
