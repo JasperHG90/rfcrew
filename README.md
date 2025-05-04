@@ -19,6 +19,8 @@ A crew of AI agents for creating and evaluating Requests for Comments (RFCs). Th
 
 This is AI-generated content. Small changes in the input notes can make a large difference.
 
+And of course: actually read the output.
+
 ## Usage
 
 ### Installation
