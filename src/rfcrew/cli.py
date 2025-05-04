@@ -15,11 +15,6 @@ from rfcrew.commands import generate_rfc_from_notes, evaluate_rfc_against_ground
 
 
 logger = logging.getLogger('rfcrew')
-# handler = logging.StreamHandler()
-# format = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
-# handler.setFormatter(format)
-# logger.addHandler(handler)
-# logger.setLevel(logging.INFO)
 
 
 app = typer.Typer(
