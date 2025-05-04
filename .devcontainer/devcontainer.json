@@ -30,8 +30,6 @@
     "runArgs": [
       "--env-file",
       ".devcontainer/.env",
-      "--mount",
-      "type=bind,source=/Users/jasperginn/.config/gcloud,target=/home/vscode/.config/gcloud"
     ],
     "workspaceFolder": "/home/vscode/workspace",
     "workspaceMount": "source=${localWorkspaceFolder},target=/home/vscode/workspace,type=bind",

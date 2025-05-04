@@ -63,9 +63,13 @@ class EvaluationAgent:
 		return Crew(agents=[self._agent], tasks=[self._task])
 
 	def execute(self, inputs: dict[str, Any]) -> CrewOutput:
-		logger.info(f'Executing EvaluationAgent with inputs: {inputs}')
+		logger.info(
+			f'Starting EvaluationAgent execution with inputs: {list(inputs.keys())}'
+		)  # Log only keys for brevity
+		logger.debug('Kicking off evaluation crew')
 		output = self._crew.kickoff(
 			inputs=inputs,
 		)
-		logger.info(f'EvaluationAgent output: {output}')
+		logger.info('EvaluationAgent execution completed successfully.')
+		logger.debug(f'EvaluationAgent raw output: {output}')  # Add debug log for raw output
 		return output

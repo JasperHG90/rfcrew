@@ -59,5 +59,6 @@ venv = ".venv"
 [tool.pytest.ini_options]
 markers = [
   "integration: marks integration tests",
+  "llm: marks tests that require LLM calls",
 ]
 cache_dir = "/home/vscode/workspace/.cache/pytest"

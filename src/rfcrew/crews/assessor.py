@@ -78,9 +78,13 @@ class ScoreAgent:
 		return Crew(agents=[self._agent], tasks=[self._task])
 
 	def execute(self, inputs: dict[str, Any]) -> CrewOutput:
-		logger.info(f'Executing ScoreAgent with inputs: {inputs}')
+		logger.info(
+			f'Starting ScoreAgent execution with inputs: {list(inputs.keys())}'
+		)  # Log only keys for brevity
+		logger.debug('Kicking off scoring crew')
 		output = self._crew.kickoff(
 			inputs=inputs,
 		)
-		logger.info(f'ScoreAgent output: {output}')
+		logger.info('ScoreAgent execution completed successfully.')
+		logger.debug(f'ScoreAgent raw output: {output}')  # Add debug log for raw output
 		return output

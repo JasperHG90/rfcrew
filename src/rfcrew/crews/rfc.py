@@ -11,7 +11,7 @@ logger = logging.getLogger('rfcrew.crews.rfc')
 
 
 def get_tools() -> dict[str, BaseTool]:
-	logger.info('Getting tools.')
+	logger.info('Initializing tools...')
 	tools = {
 		'serper_dev_tool': SerperDevTool(),
 		'scrape_website_tool': ScrapeWebsiteTool(),
@@ -33,7 +33,8 @@ def get_tools() -> dict[str, BaseTool]:
 			)
 		),
 	}
-	logger.debug(f'Tools: {tools}')
+	logger.info(f'Initialized {len(tools)} tools.')
+	logger.debug(f'Tools available: {list(tools.keys())}')
 	return tools
 
 
@@ -54,45 +55,66 @@ class RFCrew:
 	def _parse_agent_config(
 		agents_config: dict[str, Any], tools: dict[str, BaseTool]
 	) -> dict[str, Agent]:
-		logger.info('Parsing agent config.')
+		logger.info(f'Parsing {len(agents_config)} agent configurations.')
 		agents = {}
-		for agent_name, agent_config in agents_config.items():
-			logger.debug(f'Parsing agent: {agent_name}')
-			if 'tools' in agent_config:
-				_tools = [tools[tool_name.strip()] for tool_name in agent_config.pop('tools')]
-			else:
-				_tools = []
-			agents[agent_name] = Agent(**agent_config, tools=_tools)
-		logger.debug(f'Agents: {agents}')
-		return agents
+		try:
+			for agent_name, agent_config in agents_config.items():
+				logger.debug(f'Parsing agent: {agent_name}')
+				agent_tools_config = agent_config.pop('tools', [])
+				_tools = [tools[tool_name.strip()] for tool_name in agent_tools_config]
+				agents[agent_name] = Agent(**agent_config, tools=_tools)
+			logger.info(f'Successfully parsed {len(agents)} agents.')
+			logger.debug(f'Parsed agents: {list(agents.keys())}')
+			return agents
+		except KeyError as e:
+			logger.exception(
+				f"Error parsing agent config: Tool '{e}' not found in available tools."
+			)
+			raise
+		except Exception:
+			logger.exception('Failed to parse agent configurations.')
+			raise
 
 	@staticmethod
 	def _parse_task_config(
 		tasks_config: dict[str, Any], agents: dict[str, Agent]
 	) -> dict[str, Task]:
-		logger.info('Parsing task config.')
+		logger.info(f'Parsing {len(tasks_config)} task configurations.')
 		tasks = {}
-		for task_name, task_config in tasks_config.items():
-			logger.debug(f'Parsing task: {task_name}')
-			_agent = agents[task_config.pop('agent').strip()]
-			if 'context' in task_config:
-				_context = [tasks[context] for context in task_config.pop('context')]
-			else:
-				_context = []
-			tasks[task_name] = Task(agent=_agent, context=_context, **task_config)
-		logger.debug(f'Tasks: {tasks}')
-		return tasks
+		try:
+			for task_name, task_config in tasks_config.items():
+				logger.debug(f'Parsing task: {task_name}')
+				agent_name = task_config.pop('agent').strip()
+				_agent = agents[agent_name]
+				context_tasks = task_config.pop('context', [])
+				_context = [tasks[context_task_name.strip()] for context_task_name in context_tasks]
+				tasks[task_name] = Task(agent=_agent, context=_context, **task_config)
+			logger.info(f'Successfully parsed {len(tasks)} tasks.')
+			logger.debug(f'Parsed tasks: {list(tasks.keys())}')
+			return tasks
+		except KeyError as e:
+			logger.exception(f"Error parsing task config: Agent or Context Task '{e}' not found.")
+			raise
+		except Exception:
+			logger.exception('Failed to parse task configurations.')
+			raise
 
 	@classmethod
 	def from_config(
 		cls, agents_config_path: plb.Path, tasks_config_path: plb.Path, tools: dict[str, BaseTool]
 	) -> 'RFCrew':
 		logger.info(
-			f'Creating RFCrew from config files: agents={agents_config_path}, tasks={tasks_config_path}'
+			f'Creating RFCrew from config files: agents="{agents_config_path}", tasks="{tasks_config_path}"'
 		)
-		agents = cls._parse_agent_config(agents_config=read_yaml(agents_config_path), tools=tools)
-		tasks = cls._parse_task_config(tasks_config=read_yaml(tasks_config_path), agents=agents)
-		logger.info('RFCrew created from config.')
+		logger.debug(f'Reading agent config from: {agents_config_path}')
+		agents_config = read_yaml(agents_config_path)
+		agents = cls._parse_agent_config(agents_config=agents_config, tools=tools)
+
+		logger.debug(f'Reading task config from: {tasks_config_path}')
+		tasks_config = read_yaml(tasks_config_path)
+		tasks = cls._parse_task_config(tasks_config=tasks_config, agents=agents)
+
+		logger.info('RFCrew created successfully from config.')
 		return cls(agents=agents, tasks=tasks, tools=tools)
 
 	def crew(self, planning: bool = True, planning_llm: str | None = None) -> Crew:
@@ -107,10 +129,3 @@ class RFCrew:
 		)
 		logger.info('Crew created.')
 		return crew
-
-
-# rfc_crew = RFCrew.from_config(
-#     agents_config_path=plb.Path('/home/vscode/workspace/prototyping/RFC/config/agents.yaml'),
-#     tasks_config_path=plb.Path('/home/vscode/workspace/prototyping/RFC/config/tasks.yaml'),
-#     tools=get_tools()
-# ).crew()

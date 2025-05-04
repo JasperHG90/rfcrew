@@ -12,11 +12,11 @@ from rfcrew.commands import generate_rfc_from_notes, evaluate_rfc_against_ground
 
 
 logger = logging.getLogger('rfcrew')
-handler = logging.StreamHandler()
-format = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(format)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+# handler = logging.StreamHandler()
+# format = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+# handler.setFormatter(format)
+# logger.addHandler(handler)
+# logger.setLevel(logging.INFO)
 
 
 app = typer.Typer(
@@ -74,7 +74,7 @@ def main(
 		bool, typer.Option(help='Enable debug logging.', envvar='RFCREW_VERBOSE')
 	] = False,
 	otlp_endpoint: Annotated[
-		str | None, typer.Option(help='OpenLit endpoint', envvar='RFCREW_OLTP_ENDPOINT')
+		str | None, typer.Option(help='OpenLit endpoint', envvar='OTEL_EXPORTER_OTLP_ENDPOINT')
 	] = None,
 ):
 	if verbose:
@@ -89,7 +89,7 @@ def main(
 
 
 @app.command(short_help='Generate a request for comments (RFC) from notes.')
-def _generate(
+def generate(
 	ctx: typer.Context,
 	path_to_notes: Annotated[
 		plb.Path,

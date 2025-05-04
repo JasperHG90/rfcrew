@@ -165,4 +165,6 @@ prompts
 assets
 docker-compose.yml
 
+db
+
 prototyping
