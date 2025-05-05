@@ -208,7 +208,7 @@ def compare(
 	)
 	print('Evaluation results:')
 	print('[bold]Score:[/bold] ', _output.score)
-	print('[bold]Feedback:[/bold]: ', _output.justification)
+	print('[bold]Feedback:[/bold] ', _output.justification)
 	logger.info('RFC evaluation complete.')
 
 
