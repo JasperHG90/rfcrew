@@ -7,19 +7,45 @@ A crew of AI agents for creating and evaluating Requests for Comments (RFCs). Th
 
 ![Crew](./assets/RFCrew.png)
 
-## Features
+## Rationale
 
-*   **RFC Generation:** Generate RFCs from provided notes using a configurable crew of agents.
-*   **RFC Evaluation:** Evaluate a generated RFC against a human-written ground truth.
-*   **Configurable Agents and Tasks:** Define agent roles, goals, backstories, and tasks using YAML configuration files.
-*   **Tool Usage:** Agents can utilize tools like web search and web scraping to gather information.
-*   **Notes Scoring:** Initial notes are scored for sufficiency before proceeding with RFC generation.
+Writing RFCs can take a lot of work. If a AI agents can produce the first 50-60% of the document then we can spend more time on implementation.
 
-## Caution
+> [!WARNING]
+> This is AI-generated content. Small changes in the input notes can make a large difference. And of course: actually read the output instead of taking it at face value.
 
-This is AI-generated content. Small changes in the input notes can make a large difference.
+## How it works
 
-And of course: actually read the output.
+### Crews
+
+There are three crews defined in this library.
+
+#### RFCrew
+
+This crew generates an RFC from input notes. The AI agents defined for this task are:
+
+* **RFC Research Assistant**: Research topics that serve as input to create Request for Comments (RFC) documents
+... continue copy-paste from config/agents.yaml
+
+#### Scorer
+
+This is a single-agent crew that scores the input notes for completion. It assigns a score from 1-10 and provides a brief justification for the score.
+
+The agent definition can be found in `src/rfcrew/crews/assessor.py`
+
+#### Evaluator
+
+This is a single-agent crew that compares two RFCs, in particular w.r.t. the solution described. It provides a similarity score from 1-10 and a brief justification. You can use this to check the consistency between two generated RFCs.
+
+The agent definition can be found in `src/rfcrew/crews/evaluator.py`
+
+### Flow
+
+When you call the entrypoint with `generate` command, the following flow is executed.
+
+![Flow](assets/crewai_flow_static.png)
+
+First, your input notes are scored. If they are not sufficient, the feedback and score are printed and the flow exits. If the notes are sufficient, then an RFC is generated.
 
 ## Usage
 
@@ -38,47 +64,11 @@ cd rfcrew
 pip install .
 ```
 
-### Setting up your Gemini key
-
-Set the `GOOGLE_API_KEY` environment variable with your Gemini API key.
+If you're using the devcontainer (or have UV installed), you can execute:
 
 ```bash
-export GOOGLE_API_KEY='YOUR_API_KEY'
+uv sync
 ```
-
-### Configuring the CLI
-
-The CLI can be configured using environment variables or command-line options.
-
-*   `RFCREW_OUTPUT_DIRECTORY`: Specifies the output directory for generated files (default: current working directory).
-*   `RFCREW_VERBOSE`: Enables debug logging.
-*   `RFCREW_AGENTS_CONFIG`: Path to the agents configuration file (required for `generate` command).
-*   `RFCREW_TASKS_CONFIG`: Path to the tasks configuration file (required for `generate` command).
-
-### Commands
-
-#### `rfcrew generate`
-
-Generates a Request for Comments (RFC) from notes using a crew of agents.
-
-```bash
-rfcrew generate <path_to_notes> --agents-config <path_to_agents_config> --tasks-config <path_to_tasks_config>
-```
-
-*   `<path_to_notes>`: Path to the input notes file.
-*   `--agents-config`: Path to the agents configuration YAML file.
-*   `--tasks-config`: Path to the tasks configuration YAML file.
-
-#### `rfcrew evaluate`
-
-Evaluates a generated RFC against a human-written ground truth.
-
-```bash
-rfcrew evaluate <path_to_rfc> <path_to_ground_truth>
-```
-
-*   `<path_to_rfc>`: Path to the generated RFC file.
-*   `<path_to_ground_truth>`: Path to the ground truth RFC file.
 
 ### Configuration Files
 
@@ -93,14 +83,101 @@ Examples of these configuration files can be found in the `config/` directory.
 
 This project includes a Dev Container configuration for easy setup of a development environment with all necessary dependencies. If you are using VS Code and have the Dev Containers extension installed, you will be prompted to reopen the project in the container. This will automatically install the required dependencies and set up the environment.
 
+### OpenLit
+
+To keep track of the LLM calls, costs, and other metrics and debugging info, you can execute `just openlit up`. This downloads the [openlit](https://github.com/openlit/openlit) docker-compose YAML and runs `docker-compose up`.
+
+Metrics are tracked automatically with OpenLit via OpenTelemetry if you run a CLI command with the `--otlp-endpoint` callback, e.g.
+
+```bash
+uv run rfcrew \
+    --otlp-endpoint=http://127.0.0.1:4318
+    ...
+```
+
+The dashboard is available at: http://127.0.0.1:3000
+
+Credentials:
+
+- Email: user@openlit.io
+- Password: openlituser
+
+Execute `just openlit down` to shut down openlit.
+
 ### Justfile
 
 The project includes a `justfile` with several commands to simplify common development tasks. You can list available commands by running `just` in the terminal. Some of the commonly used commands include:
 
 *   `just install`: Installs python dependencies using uv.
-*   `just setup`: Installs python dependencies and sets up pre-commit hooks.
-*   `just test`: Runs pytest tests.
-*   `just pre_commit`: Runs pre-commit checks.
+*   `just setup`/`just s`: Installs python dependencies and sets up pre-commit hooks.
+*   `just test`/`just t`: Runs pytest tests.
+*   `just pre_commit`/`just p`: Runs pre-commit checks.
+*   `just openlit <up>/<down>`: downloads and sets up [OpenLit](https://github.com/openlit/openlit)
+
+### Setting up your Gemini key
+
+Set the `GOOGLE_API_KEY` environment variable with your Gemini API key. Get the key [here](https://ai.google.dev/).
+
+```bash
+export GOOGLE_API_KEY='YOUR_API_KEY'
+```
+
+If you're using the devcontainer, you should store this environment variable in `.devcontainer/.env`
+
+### Setting up your Serper key
+
+This library uses the [Serper](https://serper.dev/) API so that the RFC crew can execute Google searches. You need an account (it comes with a generous free tier) and API key.
+
+The API key should be exported as an environment variable called `SERPER_API_KEY`:
+
+```bash
+export SERPER_API_KEY="YOUR_API_KEY"
+```
+
+If you're using the devcontainer, you should store this environment variable in `.devcontainer/.env`
+
+### Commands
+
+Type `rfcrew --help` to view available commands and global arguments (e.g. otlp endpoint, output directory, verbose output)
+
+## Examples
+
+The 'samples' directory contains sample notes and RFC outputs.
+
+### Scoring input notes
+
+You can score input notes using `rfcrew score`:
+
+```bash
+uv run rfcrew \
+    score \
+    "/home/vscode/workspace/samples/bq_write_api/notes/bq_write_api_insufficient.md"
+```
+
+Output:
+
+```
+Score: 5
+Feedback: The notes provide a clear topic, scope, and a good list of requirements and constraints. The background and context are sufficient to understand the motivation. However, the problem definition could be sharper, focusing more on the specific challenges of using the BQ Write API with Python/Protobuf rather than just stating the need to find the 'best way'. Crucially, there is no evidence of initial research or exploration of potential approaches/alternatives, which is a significant gap for an RFC kick-off. This lack of preliminary investigation necessitates a score below 6.
+```
+
+### Generating an RFC draft
+
+To generate an RFC draft, use the `generate` command. You need to pass the input path to the notes as well as the agents and tasks configuration.
+
+```bash
+uv run rfcrew \
+    --verbose \
+    --otlp-endpoint=http://127.0.0.1:4318 \
+    generate \
+    "/home/vscode/workspace/samples/notes/bq_write_api_sufficient.md" \
+    --agents-config="/home/vscode/workspace/config/agents.yaml" \
+    --tasks-config="/home/vscode/workspace/config/tasks.yaml"
+```
+
+These two agents and tasks configuration files location can be set using environment variables `RFCREW_AGENTS_CONFIG` and `RFCREW_TASKS_CONFIG` respectively.
+
+If you're using the devcontainer, you can place these environment variables in your .devcontainer/.env file.
 
 ## Limitations
 

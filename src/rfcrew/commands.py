@@ -6,8 +6,32 @@ from crewai import CrewOutput
 
 from .flows import RFCFlow, RFCFlowState
 from .crews.evaluator import EvaluationAgent, EvaluationAgentModel
+from .crews.assessor import ScoreAgentOutputModel, ScoreAgent
 
 logger = logging.getLogger('rfcrew.commands')
+
+
+def score_notes(
+	path_to_notes: plb.Path,
+) -> ScoreAgentOutputModel:
+	"""
+	Score the provided notes using the ScoreAgent.
+	"""
+	logger.info(f'Starting scoring of notes: {path_to_notes}')
+	with path_to_notes.open('r') as f:
+		notes = f.read()
+
+	logger.debug('Initializing ScoreAgent')
+	agent = ScoreAgent(model='gemini/gemini-2.5-flash-preview-04-17')
+
+	logger.debug('Executing ScoreAgent')
+	result = agent.execute(
+		inputs={
+			'notes': notes.rstrip(),
+		}
+	)
+	logger.info('Scoring completed successfully.')
+	return cast(ScoreAgentOutputModel, result.pydantic)
 
 
 def generate_rfc_from_notes(

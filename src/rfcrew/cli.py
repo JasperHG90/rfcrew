@@ -11,7 +11,7 @@ from pydantic import BaseModel, AfterValidator
 
 from rfcrew import __version__
 from rfcrew.crews.assessor import ScoreAgentOutputModel
-from rfcrew.commands import generate_rfc_from_notes, evaluate_rfc_against_ground_truth
+from rfcrew.commands import generate_rfc_from_notes, evaluate_rfc_against_ground_truth, score_notes
 
 
 logger = logging.getLogger('rfcrew')
@@ -60,7 +60,7 @@ class Common(BaseModel):
 	otlp_endpoint: Annotated[str | None, AfterValidator(_ping_oltp_endpoint)] = None
 
 
-@app.command(short_help='📌 Displays the current version number of the promptcreator library')
+@app.command(short_help='Displays the current version number of the rfcrew library')
 def version():
 	print(__version__)
 
@@ -76,12 +76,9 @@ def main(
 			file_okay=False,
 			dir_okay=True,
 			resolve_path=True,
-			envvar='RFCREW_OUTPUT_DIRECTORY',
 		),
 	] = plb.Path.cwd(),
-	verbose: Annotated[
-		bool, typer.Option(help='Enable debug logging.', envvar='RFCREW_VERBOSE')
-	] = False,
+	verbose: Annotated[bool, typer.Option(help='Enable debug logging.')] = False,
 	otlp_endpoint: Annotated[str | None, typer.Option(help='OpenLit endpoint')] = None,
 ):
 	if verbose:
@@ -93,6 +90,30 @@ def main(
 	ctx.obj = Common(
 		verbose=verbose, output_directory=output_directory, otlp_endpoint=otlp_endpoint
 	)
+
+
+@app.command(
+	short_help='Score input notes and receive feedback on quality and completeness',
+	no_args_is_help=True,
+)
+def score(
+	ctx: typer.Context,
+	path_to_notes: Annotated[
+		plb.Path,
+		typer.Argument(
+			help='Path to the notes file',
+			exists=True,
+			file_okay=True,
+			dir_okay=False,
+			resolve_path=True,
+		),
+	],
+):
+	logger.info(f'Scoring notes: {path_to_notes}')
+	result = score_notes(path_to_notes=path_to_notes)
+	_score = f'[red]{result.score}[/red]' if result.score < 6 else f'[green]{result.score}[/green]'
+	print(f'[bold]Score:[/bold] {_score}')
+	print(f'[bold]Feedback:[/bold] {result.justification}')
 
 
 @app.command(short_help='Generate a request for comments (RFC) from notes.', no_args_is_help=True)
