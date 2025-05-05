@@ -3,7 +3,7 @@
 > [!WARNING]
 > This library is currently in development. Use at your own risk.
 
-RFCrew leverages AI agents, orchestrated by CrewAI, to streamline the process of creating and evaluating Requests for Comments (RFCs). It helps automate the initial drafting of RFCs from notes and allows comparison between different RFC versions.
+RFCrew uses AI agents, orchestrated by CrewAI, to streamline the process of creating and evaluating Requests for Comments (RFCs). It helps automate the initial drafting of RFCs from notes and allows comparison between different RFC versions.
 
 ![Crew](./assets/RFCrew.png)
 
