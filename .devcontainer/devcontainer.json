@@ -19,7 +19,8 @@
           "pomdtr.excalidraw-editor",
           "tamasfe.even-better-toml",
           "kokakiwi.vscode-just",
-          "saoudrizwan.claude-dev"
+          "saoudrizwan.claude-dev",
+          "bierner.markdown-mermaid"
         ],
         "settings": {
           "python.pythonPath": "/home/vscode/workspace/.venv/bin/python",

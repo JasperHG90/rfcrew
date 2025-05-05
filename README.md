@@ -167,7 +167,7 @@ uv run rfcrew \
     --verbose \
     --otlp-endpoint=http://127.0.0.1:4318 \
     generate \
-    "samples/notes/bq_write_api_sufficient.md" \
+    "samples/bq_write_api/notes/bq_write_api_sufficient.md" \
     --agents-config="config/agents.yaml" \
     --tasks-config="config/tasks.yaml"
 
