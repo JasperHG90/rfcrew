@@ -32,6 +32,7 @@
       "--env-file",
       ".devcontainer/.env",
     ],
+    "appPort": [ "3000:3001" ],
     "workspaceFolder": "/home/vscode/workspace",
     "workspaceMount": "source=${localWorkspaceFolder},target=/home/vscode/workspace,type=bind",
     "features": {

@@ -67,7 +67,7 @@ When using the `generate` command:
 1.  **Clone the repository:**
     ```bash
     # Replace with the actual repository URL if different
-    git clone https://github.com/your_username/rfcrew.git
+    git clone https://github.com/JasperHG90/rfcrew.git
     cd rfcrew
     ```
 
@@ -170,12 +170,12 @@ uv run rfcrew \
     "samples/bq_write_api/notes/bq_write_api_sufficient.md" \
     --agents-config="config/agents.yaml" \
     --tasks-config="config/tasks.yaml"
-
 # Example relying on environment variables for config paths
 # export RFCREW_AGENTS_CONFIG='config/agents.yaml'
 # export RFCREW_TASKS_CONFIG='config/tasks.yaml'
 # uv run rfcrew generate "samples/notes/bq_write_api_sufficient.md"
 ```
+
 
 Some generated RFCs are available in the 'samples' directory.
 

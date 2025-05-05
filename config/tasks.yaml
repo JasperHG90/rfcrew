@@ -3,20 +3,23 @@ rfc_research_assistant:
     rfc_research_assistant
   description: >
     **Role & Goal:**  Your primary goal is to conduct focused research based on initial RFC notes,
-    specifically within the domain of Google Cloud Platform (GCP) data engineering, and synthesize the
+    specifically within the domain of data engineering, and synthesize the
     findings into a structured report suitable for advancing the RFC process.
 
-    **Input:** You will receive initial RFC notes in markdown format ({notes}). You must analyze these
+    **Input:** You will receive initial RFC notes in markdown format. You must analyze these
     notes to understand:
     1.  The core **Research Topic**.
     2.  The specific **Decision** that needs to be informed by the research.
     3.  Any stated technical **Requirements** or **Constraints**.
+    4.  Whether the research is focused on a specific **cloud platform** (e.g. Azure, AWS, GCP), **tool**
+    (e.g. Airflow, OpenMetaData, Python) or a broader **data engineering pattern**.
 
     **Core Responsibilities:**
     1.  **Targeted Research:** Utilize web search and scraping tools to investigate the research topic
     defined in the notes.
-    2.  **GCP Data Engineering Focus:** Critically filter and prioritize information relevant to GCP
-    services, best practices, and common data engineering patterns within GCP.
+    2.  **Data Engineering Focus:** Critically filter and prioritize information relevant to any mentioned
+    cloud platform, tool, or data engineering patterns. Focus on best best practices, and common data engineering
+    patterns within for that context.
     3.  **Solution Exploration:** Identify potential technical solutions, approaches, or architectural
     patterns that address the topic and requirements.
     4.  **Evaluation:** Analyze the pros and cons of each identified option. Explore alternatives and
@@ -27,7 +30,7 @@ rfc_research_assistant:
 
     **Critical Constraints:**
     - Your research, analysis, and recommendations MUST be tailored to the context
-    of **GCP data engineering**.
+    (tool, platform, patterns) from the input notes.
     - Do **not** change the **meaning** of the background, context, topic,
     problem definition, requirements, or constraints provided in the original user notes.
     - You **MAY NOT** change the original notes or make assumptions about requirements. In such cases, be clear that you're
@@ -35,7 +38,8 @@ rfc_research_assistant:
 
     **RFC Notes for this task:** {notes}
   expected_output: >
-    A well-structured markdown document presenting the research findings. The document must use clear Markdown formatting (headings, lists, code blocks) and include the following top-level sections, populated with synthesized research relevant to the input notes:
+    A well-structured markdown document presenting the research findings. The document must use clear Markdown formatting (headings, lists, code blocks)
+    and include the following top-level sections, populated with synthesized research relevant to the input notes:
 
     *   `## User's input notes`: The original `{notes}` provided by the user, included verbatim for context.
     *   `## Research Summary`: A brief executive summary of the key findings and conclusions of the research.
@@ -43,7 +47,7 @@ rfc_research_assistant:
     For each option:
         *   Include technical details.
         *   List specific Pros and Cons.
-        *   Highlight relevant GCP services or considerations.
+        *   Highlight relevant services, tools, and/or considerations.
     *   `## Requirements Analysis`: Explicitly address how the identified options align with (or fail to meet)
     the requirements and constraints mentioned in the input notes.
     *   `## Recommendation / Decision Support`: Provide analysis or data points that directly support making
@@ -60,7 +64,8 @@ rfc_research_assistant:
     [Verbatim copy of the original {notes} provided to the agent.]
 
     ## Research Summary
-    [Concise overview, e.g., "Research compared three GCP services (Dataflow, Dataproc, BigQuery) for ETL processing based on specified latency and cost constraints..."]
+    [Concise overview, e.g., "Research compared three GCP services (Dataflow, Dataproc, BigQuery) for ETL
+    processing based on specified latency and cost constraints..."]
 
     ## Options
     ### Option 1: GCP Service A
@@ -121,7 +126,8 @@ rfc_author:
         Explicitly state non-goals if mentioned in the research or if they can be reasonably inferred to
         clarify scope.
         *   **The Actual Design:** Translate the recommended option(s), requirements, and implementation
-        considerations from the research report into a coherent description of the proposed technical design. Focus on *what* is being built and *how* it works at a conceptual level.
+        considerations from the research report into a coherent description of the proposed technical design.
+        Focus on *what* is being built and *how* it works at a conceptual level.
         *   **Alternatives Considered:** Accurately populate the comparison table using information from
         the 'Options' section of the research report. Summarize the key trade-offs and reasoning for the
         preferred approach based on the 'Decision' section of the research.
@@ -305,7 +311,7 @@ peer_reviewer:
     **Goal:** To act as a knowledgeable technical peer, critically evaluating a draft RFC and its
     accompanying diagram for technical feasibility, architectural soundness, potential pitfalls, and
     alignment with team standards and the broader technical ecosystem (specifically the Enterprise
-    Data Platform and GCP).
+    Data Platform and any mentioned cloud platforms, tools, best practices, and data engineering patterns).
 
     **Core Responsibilities:**
 
@@ -314,11 +320,11 @@ peer_reviewer:
     considered, and rationale.
     2.  **Scrutinize the Technical Design ('🦉 The Actual Design'):**
         *   **Feasibility:** Assess if the proposed solution can realistically be built and operated
-        using the suggested technologies and approaches, particularly within the GCP environment.
+        using the suggested technologies and approaches, particularly within the mentioned cloud environment.
         Consider known limitations or complexities.
         *   **Soundness & Best Practices:** Evaluate the architectural choices. Does the design
         follow established software engineering and data engineering principles (e.g., modularity,
-        separation of concerns, idempotency where applicable)? Does it align with GCP best practices
+        separation of concerns, idempotency where applicable)? Does it align with the cloud's best practices
         for the services involved? Are there potential anti-patterns?
         *   **Component Choice:** Question the selection of specific technologies or services. Are
         they appropriate for the task? Are there simpler, more robust, or more cost-effective alternatives
@@ -346,7 +352,7 @@ peer_reviewer:
     complexities, monitoring gaps, specific failure modes). This complements, but is distinct from, the
     operational/business risks assessed by the `operational_and_risk_assessor`.
     6.  **Provide Constructive Feedback:** Offer specific, actionable suggestions for improvement. This
-    could include recommending alternative approaches, suggesting specific GCP configurations, pointing
+    could include recommending alternative approaches, suggesting specific cloud vendor configurations, pointing
     out areas needing more technical detail, or proposing refinements to the design or diagram. Frame
     feedback constructively.
     7.  **Contextual Awareness:** Ensure the evaluation considers the specific technical domain (e.g.,
@@ -407,7 +413,7 @@ operational_and_risk_assessor:
   description: >
     **Goal:** To meticulously analyze a draft RFC from an operational, security, cost, compliance, and
     readiness perspective, identifying potential risks, impacts, and requirements for successful deployment
-    and sustained operation within the Enterprise Data Platform context (specifically GCP).
+    and sustained operation within the Enterprise Data Platform context.
 
     **Core Responsibilities:**
 
@@ -455,7 +461,7 @@ operational_and_risk_assessor:
         *   **Internal Policies:** Does the proposal align with internal data governance and security
         policies?
     6.  **Determine Readiness Requirements & Gaps:**
-        *   **Infrastructure:** What specific infrastructure needs provisioning (e.g., GCP projects,
+        *   **Infrastructure:** What specific infrastructure needs provisioning (e.g., projects/resource groups,
         networks, databases, IAM roles)? Is Infrastructure as Code (IaC) planned?
         *   **Dependencies:** Are external software libraries or service dependencies identified? How will
         they be managed?
@@ -556,6 +562,8 @@ editor:
     identify and flag such instances. The agent must do so in the 'discussion' section.
     *   It cannot interact with external platforms (like collaboration tools) or file systems beyond
     reading the initial inputs and producing the final output.
+    *   The agent **MUST NOT** change the mermaid diagram code. If you think edits are warranted, then
+    place these as comments below the diagram in the markdown document.
   expected_output: >
     The output should be a revised RFC document in markdown format, following the original RFC template.
 

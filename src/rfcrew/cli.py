@@ -110,7 +110,8 @@ def score(
 	],
 ):
 	logger.info(f'Scoring notes: {path_to_notes}')
-	result = score_notes(path_to_notes=path_to_notes)
+	shared = cast(Common, ctx.obj)
+	result = score_notes(path_to_notes=path_to_notes, otlp_endpoint=shared.otlp_endpoint)
 	_score = f'[red]{result.score}[/red]' if result.score < 6 else f'[green]{result.score}[/green]'
 	print(f'[bold]Score:[/bold] {_score}')
 	print(f'[bold]Feedback:[/bold] {result.justification}')
@@ -154,8 +155,12 @@ def generate(
 ):
 	logger.info(f'Generating RFC from notes: {path_to_notes}')
 	_uid = coolname.generate_slug(2).replace('-', '_')
+	shared = cast(Common, ctx.obj)
 	state, output = generate_rfc_from_notes(
-		path_to_notes=path_to_notes, agents_config=agents_config, tasks_config=tasks_config
+		path_to_notes=path_to_notes,
+		agents_config=agents_config,
+		tasks_config=tasks_config,
+		otlp_endpoint=shared.otlp_endpoint,
 	)
 	if output is None:
 		print(
@@ -165,22 +170,25 @@ def generate(
 			f'[bold]Feedback:[/bold] {cast(ScoreAgentOutputModel, state.notes_feedback).justification}'
 		)
 	else:
-		shared = cast(Common, ctx.obj)
-		with (shared.output_directory / f'rfc_{_uid}.md').open('w') as generated_rfc:
-			raw_mkd: str = output.raw
-			# Post-process the raw markdown to remove code blocks
-			if raw_mkd.startswith('```markdown'):
-				raw_mkd = raw_mkd.lstrip('```markdown').lstrip('\n')
-			if raw_mkd.endswith('```'):
-				raw_mkd = raw_mkd.rstrip('```').rstrip('\n')
-			generated_rfc.write(raw_mkd)
-		logger.info('RFC generation complete.')
+		if hasattr(output, 'raw'):
+			with (shared.output_directory / f'rfc_{_uid}.md').open('w') as generated_rfc:
+				raw_mkd: str = output.raw
+				# Post-process the raw markdown to remove code blocks
+				if raw_mkd.startswith('```markdown'):
+					raw_mkd = raw_mkd.lstrip('```markdown').lstrip('\n')
+				if raw_mkd.endswith('```'):
+					raw_mkd = raw_mkd.rstrip('```').rstrip('\n')
+				generated_rfc.write(raw_mkd)
+			logger.info('RFC generation complete.')
+		else:
+			print("Output does not have 'raw' attribute. Please check the output object.")
 
 
 @app.command(
 	short_help='Compare two documents for similarity on described solution', no_args_is_help=True
 )
 def compare(
+	ctx: typer.Context,
 	path_to_rfc: Annotated[
 		plb.Path,
 		typer.Argument(
@@ -203,8 +211,11 @@ def compare(
 	],
 ):
 	logger.info(f'Evaluating RFC: {path_to_rfc} against ground truth: {path_to_ground_truth}')
+	shared = cast(Common, ctx.obj)
 	_output = evaluate_rfc_against_ground_truth(
-		path_to_ground_truth=path_to_ground_truth, path_to_rfc=path_to_rfc
+		path_to_ground_truth=path_to_ground_truth,
+		path_to_rfc=path_to_rfc,
+		otlp_endpoint=shared.otlp_endpoint,
 	)
 	print('Evaluation results:')
 	print('[bold]Score:[/bold] ', _output.score)

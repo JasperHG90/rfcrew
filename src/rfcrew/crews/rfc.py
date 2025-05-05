@@ -134,10 +134,14 @@ class RFCrew:
 			verbose=self.verbose,
 			planning=planning,
 			planning_llm=LLM(
-				model=planning_llm, temperature=0.2, api_key=os.environ.get('GOOGLE_API_KEY')
-			)
-			if planning_llm
-			else None,
+				model='gemini/gemini-2.5-flash-preview-04-17',
+				temperature=0.2,
+				# Apparently, we need to specify `google_api_key` here as well
+				#  ...
+				# How on earth does this work?
+				api_key=os.environ.get('GOOGLE_API_KEY'),
+				google_api_key=os.environ.get('GOOGLE_API_KEY'),
+			),
 		)
 		logger.info('Crew created.')
 		return crew

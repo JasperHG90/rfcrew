@@ -541,7 +541,7 @@ wheels = [
 
 [[package]]
 name = "crewai"
-version = "0.114.0"
+version = "0.118.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "appdirs" },
@@ -568,9 +568,9 @@ dependencies = [
     { name = "tomli-w" },
     { name = "uv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/66/23/1ae65357a94d788e1fa5a9140d1c5990e130f7bb60ea93e5bb9dbbc41c2c/crewai-0.114.0.tar.gz", hash = "sha256:b2f79693088088b3c1722abecc39a1535115f468d3ce1aa29dcf56cce3ff2968", size = 40529462 }
+sdist = { url = "https://files.pythonhosted.org/packages/c0/71/5321cd921e783288453c441fe4bbe05c0adefbf95ffa0954df3f3bac34cc/crewai-0.118.0.tar.gz", hash = "sha256:7d42b1552006c0b4b60acc9390a05ca16503669e34fd3e30d07996379e66b15b", size = 71688751 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/a9/18597cd8075124f1e903e5c6070c6397477d25e88f787014c712cd3e1c45/crewai-0.114.0-py3-none-any.whl", hash = "sha256:590cf6afe7d95ac1d482c4fa9033a29e0a9cb567daae4187f25c1cbb1c20af14", size = 285500 },
+    { url = "https://files.pythonhosted.org/packages/3b/92/ed32f1472231be1333b059262dcfc60a4ed192fb7c916cc3fcc5af30d0f4/crewai-0.118.0-py3-none-any.whl", hash = "sha256:c6ffb34169756e565c403cadb709da7d69979f31e1d8d7504e61fe21e3d571f8", size = 305158 },
 ]
 
 [package.optional-dependencies]
@@ -580,7 +580,7 @@ tools = [
 
 [[package]]
 name = "crewai-tools"
-version = "0.40.1"
+version = "0.42.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "chromadb" },
@@ -595,9 +595,9 @@ dependencies = [
     { name = "pytube" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/16/ff/0c16c9943ec1501b12fc72aca7815f191ffe94d5f1fe4e9c353ee8c4ad1d/crewai_tools-0.40.1.tar.gz", hash = "sha256:6af5040b2277df8fd592238a17bf584f95dcc9ef7766236534999c8a9e9d0b52", size = 744094 }
+sdist = { url = "https://files.pythonhosted.org/packages/17/34/9e63e2db53d8f5c30353f271a3240687a48e55204bbd176a057c0b7658c8/crewai_tools-0.42.2.tar.gz", hash = "sha256:69365ffb168cccfea970e09b308905aa5007cfec60024d731ffac1362a0153c0", size = 754967 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/05/619c00bae2dda038f0d218dd5197120c938e9c9ccef1b9e50cfb037486f6/crewai_tools-0.40.1-py3-none-any.whl", hash = "sha256:8f459f74dee64364bfdbc524c815c4afcfb9ed532b51e6b8b4f616398d46cf1e", size = 573286 },
+    { url = "https://files.pythonhosted.org/packages/4e/43/0f70b95350084e5cb1e1d74e9acb9e18a89ba675b1d579c787c2662baba7/crewai_tools-0.42.2-py3-none-any.whl", hash = "sha256:13727fb68f0efefd21edeb281be3d66ff2f5a3b5029d4e6adef388b11fd5846a", size = 583933 },
 ]
 
 [[package]]
@@ -1889,7 +1889,7 @@ wheels = [
 
 [[package]]
 name = "litellm"
-version = "1.60.2"
+version = "1.67.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1904,9 +1904,9 @@ dependencies = [
     { name = "tiktoken" },
     { name = "tokenizers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/94/8f/704cdb0fdbdd49dc5062a39ae5f1a8f308ae0ffd746df6e0137fc1776b8a/litellm-1.60.2.tar.gz", hash = "sha256:a8170584fcfd6f5175201d869e61ccd8a40ffe3264fc5e53c5b805ddf8a6e05a", size = 6447447 }
+sdist = { url = "https://files.pythonhosted.org/packages/54/a4/bb3e9ae59e5a9857443448de7c04752630dc84cddcbd8cee037c0976f44f/litellm-1.67.1.tar.gz", hash = "sha256:78eab1bd3d759ec13aa4a05864356a4a4725634e78501db609d451bf72150ee7", size = 7242044 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/ba/0eaec9aee9f99fdf46ef1c0bddcfe7f5720b182f84f6ed27f13145d5ded2/litellm-1.60.2-py3-none-any.whl", hash = "sha256:1cb08cda04bf8c5ef3e690171a779979e4b16a5e3a24cd8dc1f198e7f198d5c4", size = 6746809 },
+    { url = "https://files.pythonhosted.org/packages/88/86/c14d3c24ae13c08296d068e6f79fd4bd17a0a07bddbda94990b87c35d20e/litellm-1.67.1-py3-none-any.whl", hash = "sha256:8fff5b2a16b63bb594b94d6c071ad0f27d3d8cd4348bd5acea2fd40c8e0c11e8", size = 7607266 },
 ]
 
 [[package]]
@@ -3377,7 +3377,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "coolname", specifier = ">=2.2.0" },
-    { name = "crewai", extras = ["tools"], specifier = ">=0.114.0" },
+    { name = "crewai", extras = ["tools"], specifier = ">=0.118.0" },
     { name = "google-cloud-aiplatform", specifier = ">=1.38" },
     { name = "google-generativeai", specifier = ">=0.8.5" },
     { name = "litellm", specifier = ">=1.60.2" },

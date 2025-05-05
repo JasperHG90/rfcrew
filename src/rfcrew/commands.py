@@ -11,12 +11,21 @@ from .crews.assessor import ScoreAgentOutputModel, ScoreAgent
 logger = logging.getLogger('rfcrew.commands')
 
 
+def _configure_otlp_endpoint(v: str | None) -> None:
+	if v is not None:
+		import openlit
+
+		openlit.init(otlp_endpoint=v)
+
+
 def score_notes(
 	path_to_notes: plb.Path,
+	otlp_endpoint: str | None = None,
 ) -> ScoreAgentOutputModel:
 	"""
 	Score the provided notes using the ScoreAgent.
 	"""
+	_configure_otlp_endpoint(otlp_endpoint)
 	logger.info(f'Starting scoring of notes: {path_to_notes}')
 	with path_to_notes.open('r') as f:
 		notes = f.read()
@@ -38,10 +47,12 @@ def generate_rfc_from_notes(
 	path_to_notes: plb.Path,
 	agents_config: plb.Path,
 	tasks_config: plb.Path,
+	otlp_endpoint: str | None = None,
 ) -> tuple[RFCFlowState, None | CrewOutput]:
 	"""
 	Generate an RFC from the provided notes.
 	"""
+	_configure_otlp_endpoint(otlp_endpoint)
 	logger.info(f'Starting RFC generation from notes: {path_to_notes}')
 	with path_to_notes.open('r') as f:
 		notes = f.read()
@@ -63,7 +74,9 @@ def generate_rfc_from_notes(
 def evaluate_rfc_against_ground_truth(
 	path_to_rfc: plb.Path,
 	path_to_ground_truth: plb.Path,
+	otlp_endpoint: str | None = None,
 ) -> EvaluationAgentModel:
+	_configure_otlp_endpoint(otlp_endpoint)
 	logger.info(
 		f'Starting evaluation of RFC: {path_to_rfc} against ground truth: {path_to_ground_truth}'
 	)
