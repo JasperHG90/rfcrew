@@ -67,9 +67,7 @@ class RFCFlow(Flow[RFCFlowState]):
 			tools=get_tools(),
 		)
 		logger.debug('Building Crew instance.')
-		_crew = _crew_builder.crew(
-			planning=True, planning_llm='gemini/gemini-2.5-flash-preview-04-17'
-		)
+		_crew = _crew_builder.crew(planning=True, planning_llm='gemini/gemini-2.0-flash-lite-001')
 		logger.debug('Kicking off RFC generation crew.')
 		result = _crew.kickoff({'notes': self.state.notes})
 		logger.debug('RFC generation crew finished successfully.')
