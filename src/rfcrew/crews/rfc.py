@@ -125,23 +125,27 @@ class RFCrew:
 		logger.info('RFCrew created successfully from config.')
 		return cls(agents=agents, tasks=tasks, tools=tools)
 
-	def crew(self, planning: bool = True, planning_llm: str | None = None) -> Crew:
-		logger.info(f'Creating Crew with planning={planning}, planning_llm={planning_llm}')
+	def crew(self, planning_llm: str | None = None) -> Crew:
+		logger.info(
+			f'Creating Crew with planning={True if planning_llm else False}, planning_llm={planning_llm}'
+		)
 		crew = Crew(
 			tasks=list(self.tasks.values()),
 			agents=list(self.agents.values()),
 			process=Process.sequential,
 			verbose=self.verbose,
-			planning=planning,
+			planning=False if not planning_llm else True,
 			planning_llm=LLM(
-				model='gemini/gemini-2.5-flash-preview-04-17',
+				model=planning_llm,
 				temperature=0.2,
 				# Apparently, we need to specify `google_api_key` here as well
 				#  ...
 				# How on earth does this work?
 				api_key=os.environ.get('GOOGLE_API_KEY'),
 				google_api_key=os.environ.get('GOOGLE_API_KEY'),
-			),
+			)
+			if planning_llm
+			else None,
 		)
 		logger.info('Crew created.')
 		return crew
