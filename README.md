@@ -231,3 +231,4 @@ Document 2.
 *   Implement server-side validation for Mermaid MCP syntax.
 *   Fine-tune model usage within the crew setup.
 *   Support for additional LLM providers.
+*   Add "Architect" role with access/MVP to Confluence so that Enterprise/Domain architecture can be included in review process.
