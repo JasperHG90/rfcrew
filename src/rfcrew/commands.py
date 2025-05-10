@@ -7,6 +7,7 @@ from crewai import CrewOutput
 from .flows import RFCFlow, RFCFlowState
 from .crews.evaluator import EvaluationAgent, EvaluationAgentModel
 from .crews.assessor import ScoreAgentOutputModel, ScoreAgent
+from .crews.converter import ConverterAgent
 
 logger = logging.getLogger('rfcrew.commands')
 
@@ -71,7 +72,7 @@ def generate_rfc_from_notes(
 	return flow.state, result
 
 
-def evaluate_rfc_against_ground_truth(
+def compare_documents(
 	path_to_rfc: plb.Path,
 	path_to_ground_truth: plb.Path,
 	otlp_endpoint: str | None = None,
@@ -94,3 +95,22 @@ def evaluate_rfc_against_ground_truth(
 	result = agent.execute({'document_1': rfc_doc, 'document_2': ground_truth_doc})
 	logger.info('RFC evaluation completed successfully.')
 	return cast(EvaluationAgentModel, result.pydantic)
+
+
+def convert_rfc_to_adr(
+	path_to_rfc: plb.Path,
+	otlp_endpoint: str | None = None,
+) -> str:
+	_configure_otlp_endpoint(otlp_endpoint)
+	logger.info(f'Converting RFC: {path_to_rfc}')
+	logger.debug('Initializing EvaluationAgent')
+	agent = ConverterAgent(model='gemini/gemini-2.5-flash-preview-04-17')
+
+	logger.debug(f'Reading RFC file: {path_to_rfc}')
+	with path_to_rfc.open('r') as f:
+		rfc_doc = f.read()
+
+	logger.debug('Executing converter agent')
+	result = agent.execute({'RFC_content': rfc_doc})
+	logger.info('RFC evaluation completed successfully.')
+	return result.raw

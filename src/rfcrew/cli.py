@@ -11,7 +11,12 @@ from pydantic import BaseModel, AfterValidator
 
 from rfcrew import __version__
 from rfcrew.crews.assessor import ScoreAgentOutputModel
-from rfcrew.commands import generate_rfc_from_notes, evaluate_rfc_against_ground_truth, score_notes
+from rfcrew.commands import (
+	generate_rfc_from_notes,
+	compare_documents,
+	score_notes,
+	convert_rfc_to_adr,
+)
 
 
 logger = logging.getLogger('rfcrew')
@@ -184,6 +189,41 @@ def generate(
 			print("Output does not have 'raw' attribute. Please check the output object.")
 
 
+@app.command(short_help='Convert an RFC to an ADR', no_args_is_help=True)
+def convert(
+	ctx: typer.Context,
+	path_to_rfc: Annotated[
+		plb.Path,
+		typer.Argument(
+			help='Path to the notes file',
+			exists=True,
+			file_okay=True,
+			dir_okay=False,
+			resolve_path=True,
+		),
+	],
+	path_to_adr: Annotated[
+		plb.Path | None,
+		typer.Option(
+			help='Path to the notes file',
+			exists=False,
+			file_okay=True,
+			dir_okay=False,
+			resolve_path=True,
+		),
+	] = None,
+):
+	shared = cast(Common, ctx.obj)
+	_output = convert_rfc_to_adr(
+		path_to_rfc=path_to_rfc,
+		otlp_endpoint=shared.otlp_endpoint,
+	)
+	if path_to_adr is None:
+		path_to_adr = path_to_rfc.with_suffix('_adr.md')
+	with path_to_adr.open('w') as f:
+		f.write(_output)
+
+
 @app.command(
 	short_help='Compare two documents for similarity on described solution', no_args_is_help=True
 )
@@ -212,7 +252,7 @@ def compare(
 ):
 	logger.info(f'Evaluating RFC: {path_to_rfc} against ground truth: {path_to_ground_truth}')
 	shared = cast(Common, ctx.obj)
-	_output = evaluate_rfc_against_ground_truth(
+	_output = compare_documents(
 		path_to_ground_truth=path_to_ground_truth,
 		path_to_rfc=path_to_rfc,
 		otlp_endpoint=shared.otlp_endpoint,

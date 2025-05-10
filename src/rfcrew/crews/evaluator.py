@@ -1,11 +1,7 @@
-import logging
-import os
-from typing import Any
-
 from pydantic import BaseModel, Field
-from crewai import LLM, CrewOutput, Agent, Task, Crew
+from crewai import Agent, Task
 
-logger = logging.getLogger('rfcrew.crews.evaluator')
+from .base import BaseAgent
 
 
 class EvaluationAgentModel(BaseModel):
@@ -13,14 +9,7 @@ class EvaluationAgentModel(BaseModel):
 	justification: str = Field(..., description='Justification for the score')
 
 
-class EvaluationAgent:
-	def __init__(self, model: str):
-		self._model = model
-
-	@property
-	def _llm(self):
-		return LLM(model=self._model, temperature=0.2, api_key=os.environ.get('GOOGLE_API_KEY'))
-
+class EvaluationAgent(BaseAgent):
 	@property
 	def _agent(self) -> Agent:
 		return Agent(
@@ -57,19 +46,3 @@ class EvaluationAgent:
 			),
 			output_pydantic=EvaluationAgentModel,
 		)
-
-	@property
-	def _crew(self) -> Crew:
-		return Crew(agents=[self._agent], tasks=[self._task])
-
-	def execute(self, inputs: dict[str, Any]) -> CrewOutput:
-		logger.info(
-			f'Starting EvaluationAgent execution with inputs: {list(inputs.keys())}'
-		)  # Log only keys for brevity
-		logger.debug('Kicking off evaluation crew')
-		output = self._crew.kickoff(
-			inputs=inputs,
-		)
-		logger.info('EvaluationAgent execution completed successfully.')
-		logger.debug(f'EvaluationAgent raw output: {output}')  # Add debug log for raw output
-		return output
