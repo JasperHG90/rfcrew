@@ -45,8 +45,8 @@ class ConverterAgent(BaseAgent):
 				"*   **ADR Title:** Derive from the RFC's main title or subject.\n"
 				'*   **Context:** Look for problem statements, background information, or motivation sections in the RFC.\n'
 				'*   **Decision:** Identify the core proposal, resolution, or the specific change that was accepted in the RFC.\n'
-				'*   **Impact:** Find discussions on the effects of the decision, who/what systems it affects, and how.\n'
-				"*   **Options Considered:** Summarize alternative solutions discussed in the RFC and why they were not chosen. If not detailed, use 'TBD'.\n"
+				'*   **Impact:** Find discussions on the effects of the decision, who/what systems it affects, and how. If there is a "discussion section", \n'
+				'pay close attention to the points raised there.\n'
 				'*   **Consequences:** Look for pros/cons, trade-offs, or discussions about what becomes easier or harder due to the decision.\n\n'
 				'RFC content to process: {RFC_content}'
 			),
@@ -55,7 +55,6 @@ class ConverterAgent(BaseAgent):
 				"The italicized text within each section of the template is for your guidance and **must be replaced** with content from the RFC or 'TBD'.\n\n"
 				'Alternatively, if no clear decision is found in the RFC, the output must be exactly: `ADR_GENERATION_SKIPPED: No clear decision found in RFC.`\n\n'
 				'**ADR Template:**\n\n'
-				'```markdown\n'
 				'# ADR-XXX: [Descriptive Title Derived from RFC]\n\n'
 				'**Status:** Accepted\n'
 				"**Date:** [Date of RFC Acceptance or ADR Creation - use YYYY-MM-DD, or 'TBD']\n\n"
@@ -66,19 +65,23 @@ class ConverterAgent(BaseAgent):
 				'*(The `table-of-contents` block above should be included literally as shown; do not attempt to generate a table of contents yourself).*\n\n'
 				'## ✍️ Context\n'
 				'---\n'
-				'_What is the issue, problem, or driving force that motivated this decision or change as described in the RFC?_\n\n'
+				'_What is the issue, problem, or driving force that motivated this decision or change as described in the RFC?_ (max 150 words)\n\n'
 				'## 🤝 Decision\n'
 				'---\n'
-				'_What is the specific change, solution, or architectural choice that was made and accepted, as stated in the RFC?_\n\n'
-				'## 🤔 Options Considered\n'
-				'---\n'
-				"_What alternative options were discussed or considered in the RFC? Why were they not chosen? If not explicitly mentioned or detailed, state 'TBD' or provide a brief summary if available._\n\n"
+				'_What is the specific change, solution, or architectural choice that was made and accepted, as stated in the RFC?_ (shortly describe '
+				'the change, solution or architectural choice in a self-contained way, without references to other options that may have been discussed '
+				'in the RFC. Do **not** refer to option names or numbers, just **describe** the decision accurately and completely.).\n\n'
 				'## 💥 Impact\n'
 				'---\n'
-				'_What is the anticipated impact of this decision? Who or what systems will be affected, and how, according to the RFC?_\n\n'
+				'_What is the anticipated impact of this decision? Who or what systems will be affected, and how, according to the RFC?_ '
+				'(in bullet-points. Start each bullet with a bold-faced key identifier [e.g. "**Increased costs**:"])\n\n'
 				'## ☝️ Consequences\n'
 				'---\n'
-				'_What becomes easier or more difficult to do as a result of this change, based on the RFC? What are the positive and negative consequences or trade-offs mentioned?_\n'
+				'_What becomes easier or more difficult to do as a result of this change, based on the RFC? What are the positive and negative consequences or '
+				'trade-offs mentioned?_ (in bullet-points with headings "**becomes easier**", "**becomes harder**", and "**trade-offs**").\n'
 				'```'
+				'## 🔗 References\n'
+				'---'
+				'_If an RFC was created, add its title here_'
 			),
 		)

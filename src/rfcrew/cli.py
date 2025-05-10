@@ -219,9 +219,14 @@ def convert(
 		otlp_endpoint=shared.otlp_endpoint,
 	)
 	if path_to_adr is None:
-		path_to_adr = path_to_rfc.with_suffix('_adr.md')
+		path_to_adr = path_to_rfc.parent / f'adr_{path_to_rfc.stem}.md'
 	with path_to_adr.open('w') as f:
-		f.write(_output)
+		raw_mkd = _output
+		if _output.startswith('```markdown'):
+			raw_mkd = _output.lstrip('```markdown').lstrip('\n')
+		if _output.endswith('```'):
+			raw_mkd = _output.rstrip('```').rstrip('\n')
+		f.write(raw_mkd)
 
 
 @app.command(

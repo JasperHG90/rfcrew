@@ -30,12 +30,12 @@ class BaseAgent(ABC):
 
 	def execute(self, inputs: dict[str, Any]) -> CrewOutput:
 		logger.info(
-			f'Starting {self.__name__} execution with inputs: {list(inputs.keys())}'
+			f'Starting {self.__class__} execution with inputs: {list(inputs.keys())}'
 		)  # Log only keys for brevity
 		logger.debug('Kicking off crew')
 		output = self._crew.kickoff(
 			inputs=inputs,
 		)
-		logger.info(f'Agent "{self.__name__}" execution completed successfully.')
-		logger.debug(f'{self.__name__} raw output: {output}')  # Add debug log for raw output
+		logger.info(f'Agent "{self.__class__}" execution completed successfully.')
+		logger.debug(f'{self.__class__} raw output: {output}')  # Add debug log for raw output
 		return output

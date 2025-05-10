@@ -48,6 +48,11 @@ RFCrew utilizes different "crews" (groups of AI agents) for specific tasks:
     *   **Process:** A single-agent crew provides a similarity score (1-10) and justification. Useful for checking consistency between generated drafts.
     *   **Implementation:** See `src/rfcrew/crews/evaluator.py`.
 
+4.  **RFC to ADR Converter (`Converter`)**:
+    *   **Goal:** Convert an RFC document into an Architectural Decision Record (ADR).
+    *   **Process:** A single-agent crew extracts the relevant information from the RFC and formats it as an ADR.
+    *   **Implementation:** See `src/rfcrew/crews/converter.py`.
+
 ### Generation Flow
 
 When using the `generate` command:
@@ -216,6 +221,17 @@ correct retries and prevent data loss or duplication, adding another layer of co
 In summary, while the core technology stack (BQ Write API, Python, Protobuf, Cloud Run) and the high-level goal (scheduled batch ingestion) are shared, the critical difference lies in the chosen Write API
 stream type and the resulting consistency guarantee (at-least-once vs. exactly-once), which fundamentally changes the required client-side logic, particularly the introduction of complex offset management in
 Document 2.
+```
+
+**4. Converting an RFC to an ADR:**
+
+Use the `convert` command to convert an RFC document to an Architectural Decision Record (ADR).
+
+```bash
+uv run rfcrew \
+    convert \
+    "samples/bq_write_api/generated/rfc_cream_hedgehog_bq_write_api.md" \
+    --output-dir "samples/bq_write_api/generated/"
 ```
 
 ## Limitations
