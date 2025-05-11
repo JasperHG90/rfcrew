@@ -44,10 +44,11 @@ extend-exclude = [
   ".cache"
 ]
 line-length = 100
+indent-width = 4
 
 [tool.ruff.format]
 quote-style = "single"
-indent-style = "tab"
+indent-style = "space"
 
 [tool.pyright]
 exclude = [".venv", ".github", "docs", "tests", ".devcontainer"]
