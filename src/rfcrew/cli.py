@@ -157,6 +157,14 @@ def generate(
             envvar='RFCREW_TASKS_CONFIG',
         ),
     ],
+    planning_llm: Annotated[
+        str | None,
+        typer.Option(
+            help='LLM to use for planning if required. This should be a model in the gemini family.'
+            ' e.g. "gemini/gemini-2.5-flash-preview-04-17"',
+            envvar='RFCREW_PLANNING_LLM',
+        ),
+    ] = None,
 ):
     logger.info(f'Generating RFC from notes: {path_to_notes}')
     _uid = coolname.generate_slug(2).replace('-', '_')
@@ -165,6 +173,7 @@ def generate(
         path_to_notes=path_to_notes,
         agents_config=agents_config,
         tasks_config=tasks_config,
+        planning_llm=planning_llm,
         otlp_endpoint=shared.otlp_endpoint,
     )
     if output is None:

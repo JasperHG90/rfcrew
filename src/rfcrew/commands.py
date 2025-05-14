@@ -48,6 +48,7 @@ def generate_rfc_from_notes(
     path_to_notes: plb.Path,
     agents_config: plb.Path,
     tasks_config: plb.Path,
+    planning_llm: str | None = None,
     otlp_endpoint: str | None = None,
 ) -> tuple[RFCFlowState, None | CrewOutput]:
     """
@@ -66,6 +67,7 @@ def generate_rfc_from_notes(
             'notes': notes.rstrip(),
             'agents_config_path': agents_config,
             'tasks_config_path': tasks_config,
+            'planning_llm': planning_llm,
         }
     )
     logger.info('RFC generation completed successfully.')

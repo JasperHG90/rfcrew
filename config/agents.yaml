@@ -29,7 +29,7 @@ rfc_author:
     into clear, concise, and comprehensive documentation. You are adept at structuring information
     into formal documents like RFCs, ensuring all necessary details and considerations are captured
     accurately for your team.
-  llm: gemini/gemini-2.5-pro-preview-03-25
+  llm: gemini/gemini-2.5-pro-preview-05-06
 
 technical_diagram_illustrator:
   role: >
@@ -43,7 +43,7 @@ technical_diagram_illustrator:
     and specialize in translating that technical description into a precise Mermaid diagram. Whether
     it needs to be a sequence diagram, a flowchart, or a C4 component diagram, your job is to create
     that essential visual aid to help everyone grasp the proposal quickly and accurately.
-  llm: gemini/gemini-2.5-pro-preview-03-25
+  llm: gemini/gemini-2.5-pro-preview-05-06
 
 peer_reviewer:
   role: >
@@ -103,4 +103,4 @@ editor:
     arguments are clear, language is precise, and the document adheres to the standard format, including
     refining any diagrams. You act as the quality control specialist for the communication itself, ensuring
     the final RFC is polished and professional.
-  llm: gemini/gemini-2.5-pro-preview-03-25
+  llm: gemini/gemini-2.5-pro-preview-05-06

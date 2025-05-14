@@ -19,6 +19,9 @@ class RFCFlowState(BaseModel):
     tasks_config_path: plb.Path = Field(
         default='', description='Path to the tasks configuration file'
     )
+    planning_llm: str | None = Field(
+        default=None, description='LLM to use for planning if required'
+    )
     notes: str = Field(default='', description='Initial notes provided for the RFC process')
     notes_feedback: ScoreAgentOutputModel | None = Field(
         default=None, description='Feedback from the ScoreAgent on the RFC notes'
@@ -67,7 +70,9 @@ class RFCFlow(Flow[RFCFlowState]):
             tools=get_tools(),
         )
         logger.debug('Building Crew instance.')
-        _crew = _crew_builder.crew(planning_llm='gemini/gemini-2.0-flash-lite-001')
+        _crew = _crew_builder.crew(
+            planning_llm=self.state.planning_llm
+        )  #'gemini/gemini-2.0-flash-lite-001')
         logger.debug('Kicking off RFC generation crew.')
         result = _crew.kickoff({'notes': self.state.notes})
         logger.debug('RFC generation crew finished successfully.')
